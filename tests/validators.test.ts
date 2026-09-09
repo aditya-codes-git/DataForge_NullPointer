@@ -70,17 +70,33 @@ describe('Validation and Controlled Text Engine', () => {
     expect(result.reviewReasons.some((r) => r.includes('XyloQ') || r.includes('Ambiguous'))).toBe(true);
   });
 
-  it('handles PostgreSQL v16 as a structured phrase without mangling (Case 2 regression)', async () => {
+  it('handles PostgreSQL v16 as a structured phrase with TTS-friendly candidate', async () => {
     const original = 'Your PostgreSQL v16 migration completed successfully.';
     const risks = analyzeSpeechRisks(original);
     const result = await generateControlledText(original, risks);
 
-    expect(result.controlledText).toContain('PostgreSQL');
-    expect(result.controlledText).toContain('16');
-    expect(result.reviewRequired).toBe(true);
-    expect(result.decision.status).toBe('NEEDS_REVIEW');
+    expect(result.controlledText).toContain('Post-Gres-Q-L version sixteen');
+    expect(result.controlledText).not.toContain('postgresv 16');
     const pgChange = result.changes.find((c) => c.original.includes('PostgreSQL'));
-    expect(pgChange?.action).toBe('NEEDS_REVIEW');
+    expect(pgChange?.action).toBe('USE_CONTROLLED');
+    expect(pgChange?.candidates).toBeDefined();
+    expect(pgChange?.candidates?.length).toBeGreaterThanOrEqual(2);
+    expect(pgChange?.candidates?.[0].rank).toBe(1);
+    expect(pgChange?.candidates?.[0].text).toContain('Post-Gres-Q-L version sixteen');
+  });
+
+  it('generates multiple ranked candidates for ambiguous acronyms like SQL', async () => {
+    const original = 'The application uses SQL databases.';
+    const risks = analyzeSpeechRisks(original);
+    const result = await generateControlledText(original, risks);
+
+    expect(result.controlledText).toContain('sequel');
+    const sqlChange = result.changes.find((c) => c.original === 'SQL');
+    expect(sqlChange?.candidates).toBeDefined();
+    expect(sqlChange?.candidates?.[0].text).toBe('sequel');
+    expect(sqlChange?.candidates?.[0].rank).toBe(1);
+    expect(sqlChange?.candidates?.[1].text).toBe('S Q L');
+    expect(sqlChange?.candidates?.[1].rank).toBe(2);
   });
 
   it('handles Python 3.12 and Node.js 22 as structured technical expressions (Case 7)', async () => {

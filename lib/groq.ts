@@ -1,4 +1,4 @@
-import { SpeechRisk, Transformation } from './schemas';
+import { SpeechRisk, Transformation, RiskCandidate } from './schemas';
 import { SPEECH_ANALYSIS_SYSTEM_PROMPT, createControlledTextPrompt } from '../prompts/speech-analysis';
 
 export interface GroqReasoningResult {
@@ -6,6 +6,11 @@ export interface GroqReasoningResult {
   changes: Transformation[];
   reviewRequired: boolean;
   overallReason?: string;
+  enrichedRisks?: Array<{
+    original: string;
+    decision?: 'KEEP_ORIGINAL' | 'PROPOSE_CONTROLLED' | 'NEEDS_REVIEW';
+    candidates?: RiskCandidate[];
+  }>;
 }
 
 export async function requestGroqReasoning(
@@ -74,14 +79,25 @@ export async function requestGroqReasoning(
         confidence: c.decision === 'NEEDS_REVIEW' ? 'NEEDS_REVIEW' : 'HIGH',
         evidenceStatus: 'tested' as const,
         action,
+        rank: typeof c.rank === 'number' ? c.rank : 1,
+        candidates: Array.isArray(c.candidates) ? c.candidates : undefined,
       };
     });
+
+    const enrichedRisks = Array.isArray(parsed.risks)
+      ? parsed.risks.map((r: any) => ({
+          original: r.original || r.text,
+          decision: r.decision,
+          candidates: Array.isArray(r.candidates) ? r.candidates : undefined,
+        }))
+      : undefined;
 
     return {
       controlledText: parsed.controlledText,
       changes: mappedChanges,
       reviewRequired: Boolean(parsed.reviewRequired) || mappedChanges.some(m => m.action === 'NEEDS_REVIEW'),
       overallReason: parsed.overallReason,
+      enrichedRisks,
     };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);

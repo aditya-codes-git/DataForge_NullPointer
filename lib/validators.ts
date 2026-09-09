@@ -85,11 +85,15 @@ export function validateControlledText(
       const lowerControlled = controlledText.toLowerCase();
       const lowerBase = termBase.toLowerCase();
 
-      // Check if technical entity base is preserved or spelled out (e.g. "I P V" or "G R P C" or "Node")
+      // Check if technical entity base is preserved or spelled out (e.g. "I P V", "G R P C", "Post-Gres-Q-L", "Graph Q L", "Web R T C", or "Node")
       const isEntityPreserved =
         lowerControlled.includes(lowerBase) ||
         lowerControlled.includes('i p v') ||
         lowerControlled.includes('g r p c') ||
+        lowerControlled.includes('post-gres-q-l') ||
+        lowerControlled.includes('postgres') ||
+        lowerControlled.includes('graph q l') ||
+        lowerControlled.includes('web r t c') ||
         (lowerBase.includes('node') && lowerControlled.includes('node'));
 
       if (!isEntityPreserved) {
@@ -104,7 +108,7 @@ export function validateControlledText(
         const digitWordMap: Record<string, string> = {
           '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
           '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine',
-          '16': 'sixteen',
+          '16': 'sixteen', '22': 'twenty-two', '19': 'nineteen',
         };
         const spelledWord = digitWordMap[verNum];
         const hasVersion =

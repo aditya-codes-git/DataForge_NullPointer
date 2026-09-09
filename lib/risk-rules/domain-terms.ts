@@ -97,6 +97,13 @@ const DOMAIN_TERMS_CATALOG: DomainDictEntry[] = [
     ruleName: 'DOMAIN_GRAPHQL',
   },
   {
+    pattern: /\bWebRTC\b/gi,
+    category: 'domain_term',
+    severity: 'medium',
+    reason: 'Real-time communication technology combining "Web" and initialism "R-T-C".',
+    ruleName: 'DOMAIN_WEBRTC',
+  },
+  {
     pattern: /\bPyTorch\b/gi,
     category: 'domain_term',
     severity: 'medium',

@@ -39,6 +39,16 @@ export async function generateControlledText(
   if (hasContextualRisks && process.env.GROQ_API_KEY) {
     const groqResult = await requestGroqReasoning(originalText, risks);
     if (groqResult) {
+      if (groqResult.enrichedRisks) {
+        for (const er of groqResult.enrichedRisks) {
+          const matchRisk = risks.find((r) => r.text === er.original);
+          if (matchRisk) {
+            matchRisk.decision = er.decision;
+            matchRisk.candidates = er.candidates;
+          }
+        }
+      }
+
       const normalizedChanges: Transformation[] = groqResult.changes.map((c) => ({
         original: c.original,
         replacement: c.replacement,
@@ -47,6 +57,8 @@ export async function generateControlledText(
         confidence: c.confidence || 'HIGH',
         evidenceStatus: 'tested',
         action: c.action || (c.replacement === c.original ? 'KEEP_RAW' : 'USE_CONTROLLED'),
+        rank: c.rank || 1,
+        candidates: c.candidates,
       }));
 
       const validation = validateControlledText(
@@ -94,6 +106,15 @@ export async function generateControlledText(
   for (const risk of reverseSortedRisks) {
     const deterministic = transformRiskDeterministically(risk);
     if (deterministic) {
+      // Annotate risk with decision and candidates
+      risk.decision =
+        deterministic.action === 'KEEP_RAW'
+          ? 'KEEP_ORIGINAL'
+          : deterministic.action === 'USE_CONTROLLED'
+          ? 'PROPOSE_CONTROLLED'
+          : 'NEEDS_REVIEW';
+      risk.candidates = deterministic.candidates;
+
       // Only mutate text if action is USE_CONTROLLED
       if (deterministic.action === 'USE_CONTROLLED' && deterministic.replacement !== risk.text) {
         const before = controlled.slice(0, risk.start);
@@ -109,6 +130,8 @@ export async function generateControlledText(
         confidence: deterministic.confidence,
         evidenceStatus: 'tested',
         action: deterministic.action,
+        rank: deterministic.rank || 1,
+        candidates: deterministic.candidates,
       });
 
       if (deterministic.action === 'NEEDS_REVIEW' || deterministic.confidence === 'NEEDS_REVIEW') {

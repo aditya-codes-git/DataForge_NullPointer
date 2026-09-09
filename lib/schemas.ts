@@ -26,6 +26,12 @@ export type DecisionStatus =
 
 export type TokenAction = 'USE_CONTROLLED' | 'KEEP_RAW' | 'NEEDS_REVIEW';
 
+export interface RiskCandidate {
+  text: string;
+  reason: string;
+  rank: number;
+}
+
 export interface SpeechRisk {
   id: string;
   text: string;
@@ -36,6 +42,8 @@ export interface SpeechRisk {
   end: number;
   confidence: ConfidenceLevel;
   ruleMatched?: string;
+  decision?: 'KEEP_ORIGINAL' | 'PROPOSE_CONTROLLED' | 'NEEDS_REVIEW';
+  candidates?: RiskCandidate[];
 }
 
 export interface Transformation {
@@ -46,6 +54,8 @@ export interface Transformation {
   confidence: ConfidenceLevel;
   evidenceStatus: 'tested' | 'untested' | 'verified';
   action: TokenAction;
+  rank?: number;
+  candidates?: RiskCandidate[];
 }
 
 export interface CandidateItem {
