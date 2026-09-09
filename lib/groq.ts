@@ -5,6 +5,7 @@ export interface GroqReasoningResult {
   controlledText: string;
   changes: Transformation[];
   reviewRequired: boolean;
+  overallReason?: string;
 }
 
 export async function requestGroqReasoning(
@@ -57,10 +58,30 @@ export async function requestGroqReasoning(
       return null;
     }
 
+    const mappedChanges: Transformation[] = parsed.changes.map((c: any) => {
+      let action: 'USE_CONTROLLED' | 'KEEP_RAW' | 'NEEDS_REVIEW' = 'USE_CONTROLLED';
+      if (c.decision === 'KEEP_ORIGINAL' || c.replacement === c.original) {
+        action = 'KEEP_RAW';
+      } else if (c.decision === 'NEEDS_REVIEW' || c.confidence === 'NEEDS_REVIEW') {
+        action = 'NEEDS_REVIEW';
+      }
+
+      return {
+        original: c.original,
+        replacement: c.replacement,
+        category: c.category || 'domain_term',
+        reason: c.reason,
+        confidence: c.decision === 'NEEDS_REVIEW' ? 'NEEDS_REVIEW' : 'HIGH',
+        evidenceStatus: 'tested' as const,
+        action,
+      };
+    });
+
     return {
       controlledText: parsed.controlledText,
-      changes: parsed.changes,
-      reviewRequired: Boolean(parsed.reviewRequired),
+      changes: mappedChanges,
+      reviewRequired: Boolean(parsed.reviewRequired) || mappedChanges.some(m => m.action === 'NEEDS_REVIEW'),
+      overallReason: parsed.overallReason,
     };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);

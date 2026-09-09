@@ -42,11 +42,11 @@ export async function generateControlledText(
       const normalizedChanges: Transformation[] = groqResult.changes.map((c) => ({
         original: c.original,
         replacement: c.replacement,
-        category: (c.category || (c as unknown as { type?: string }).type || 'ambiguous') as any,
+        category: c.category || 'ambiguous',
         reason: c.reason,
         confidence: c.confidence || 'HIGH',
         evidenceStatus: 'tested',
-        action: c.replacement === c.original ? 'KEEP_RAW' : 'USE_CONTROLLED',
+        action: c.action || (c.replacement === c.original ? 'KEEP_RAW' : 'USE_CONTROLLED'),
       }));
 
       const validation = validateControlledText(
@@ -61,12 +61,16 @@ export async function generateControlledText(
         ? {
             status: 'NEEDS_REVIEW',
             summary: 'Human review recommended',
-            reason: 'Contextual reasoning flagged one or more items that require listener confirmation.',
+            reason:
+              groqResult.overallReason ||
+              'Contextual reasoning flagged one or more items that require listener confirmation.',
           }
         : {
             status: 'USE_CONTROLLED',
             summary: 'Controlled candidate recommended',
-            reason: 'Contextual reasoning generated candidate representations for improved spoken delivery.',
+            reason:
+              groqResult.overallReason ||
+              'Contextual reasoning generated candidate representations for improved spoken delivery.',
           };
 
       return {
