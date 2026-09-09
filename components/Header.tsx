@@ -4,6 +4,9 @@ import React from 'react';
 import { Volume2, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { RimeConfigPublic } from '@/lib/schemas';
 
+import Image from 'next/image';
+import Link from 'next/link';
+
 interface HeaderProps {
   rimeConfig: RimeConfigPublic | null;
 }
@@ -13,19 +16,24 @@ export function Header({ rimeConfig }: HeaderProps) {
 
   return (
     <header className="border-b border-slate-200 bg-white sticky top-0 z-30">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         {/* Brand & Subtitle */}
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm">
-            <Volume2 className="h-5 w-5" />
-          </div>
-          <div className="flex items-baseline gap-2.5">
-            <h1 className="text-lg font-bold tracking-tight text-slate-900">SaySure</h1>
-            <span className="hidden text-xs text-slate-400 sm:inline">|</span>
-            <p className="hidden text-xs font-medium text-slate-500 sm:inline">
-              Voice Delivery &amp; Pronunciation QA
-            </p>
-          </div>
+          <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
+            <Image
+              src="/logo.png"
+              alt="SaySure Logo"
+              width={34}
+              height={34}
+              className="rounded-lg object-contain"
+              priority
+            />
+            <span className="text-lg font-bold tracking-tight text-slate-900">SaySure</span>
+          </Link>
+          <span className="hidden text-xs text-slate-300 sm:inline">|</span>
+          <p className="hidden text-xs font-medium text-slate-500 sm:inline">
+            Voice Delivery &amp; Pronunciation QA
+          </p>
         </div>
 
         {/* Minimal Actions & Rime Status */}
