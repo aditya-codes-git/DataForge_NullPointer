@@ -15,25 +15,46 @@ Written text is designed for readers, not listeners. When text-to-speech engines
 - **Protocol status codes** (e.g. `HTTP 429`) are read as single large integers rather than digit-by-digit.
 - **Technical domain terms** (e.g. `Kubernetes`, `PostgreSQL`, `Neo4j`, `gRPC`) suffer from severe pronunciation drift.
 
-### The Solution: SaySure
-SaySure sits between written application data and Text-to-Speech synthesis:
+### The Solution: SaySure (DETECT ≠ CORRECT)
+
+SaySure is **not** a blind text-rewriting tool. It is an **evidence-driven Voice Delivery & Pronunciation QA system**.
+
+> [!IMPORTANT]
+> **Core Principle: DETECTION ≠ CORRECTION**
+> A detected speech risk means: *"This content deserves investigation."* It does **not** mean *"This content must be rewritten."*
+
 ```
-Written Text
-    ↓
-2-Level Risk Detection Engine (Level A: Deterministic + Level B: Contextual)
-    ↓
-Controlled Speech-Ready Text Generation
-    ↓
-Strict Meaning Preservation Validation
-    ↓
-Rime TTS Dual Synthesis (RAW vs CONTROLLED)
-    ↓
-Side-by-Side Audio Audition Studio
-    ↓
-Human Listener Verification [ Better | Same | Worse ]
+                         USER TEXT
+                             ↓
+                      RISK DETECTOR
+                             ↓
+                      RISK + CONTEXT
+                             ↓
+                   INVESTIGATION ENGINE
+                             ↓
+              ┌──────────────┼──────────────┐
+              ↓              ↓              ↓
+         ORIGINAL        CANDIDATE 1     CANDIDATE 2
+              ↓              ↓              ↓
+             RIME           RIME           RIME
+              └──────────────┼──────────────┘
+                             ↓
+                       AUDIO AUDITION
+                             ↓
+                   EVALUATION / LISTENER QA
+                             ↓
+              ┌──────────────┼──────────────┐
+              ↓              ↓              ↓
+          KEEP RAW     USE CONTROLLED   NEEDS REVIEW
 ```
 
-SaySure is **not** a chatbot with a play button, but a dedicated voice developer instrument designed to audition and verify spoken delivery.
+SaySure:
+1. Identifies content that **may** create a speech problem.
+2. Investigates that content against native Rime synthesis.
+3. Generates a safer candidate representation only when appropriate.
+4. Uses Rime to synthesize both the raw text and controlled candidate with the **exact same model/voice configuration**.
+5. Retains the original whenever native Rime rendering already sounds best (e.g. `Kubernetes` is retained raw instead of degraded to phonetic respellings like `koo-ber-net-eez`).
+6. Explicitly requests human review when confidence is low (`NEEDS_REVIEW`).
 
 ---
 
@@ -146,24 +167,29 @@ npm test
 ---
 
 ## 6. Acceptance Test Corpus
-
+ 
 SaySure includes 5 built-in acceptance test presets directly in the dashboard toolbar (and 20 curated fixtures in `fixtures/test-cases.json`):
-
+ 
 1. **Case 1 (Alphanumeric & Currency)**:
    - Input: `"Your verification code is A12B9X7 and your total is ₹1,25,000."`
    - Spoken Delivery: Spells `A one two B nine X seven` and speaks `one lakh twenty-five thousand rupees`.
-2. **Case 2 (Acronym & Tech)**:
+   - Decision: `USE_CONTROLLED` (Controlled candidate recommended).
+2. **Case 2 (Acronym + Kubernetes - DETECT ≠ CORRECT)**:
    - Input: `"HTTP 429 occurred while connecting to Kubernetes."`
-   - Spoken Delivery: Spells `HTTP four two nine` and pronounces `koo-ber-net-eez`.
+   - Spoken Delivery: `HTTP 429` expanded to `HTTP four two nine`, but `Kubernetes` is retained in original form.
+   - Decision: `USE_CONTROLLED` (HTTP 429 improved; Kubernetes original retained because Rime already pronounces it naturally).
 3. **Case 3 (Clean Speech)**:
    - Input: `"Hello, how are you today?"`
-   - Spoken Delivery: System recognizes speech-safe content and leaves text unaltered.
+   - Spoken Delivery: 0 risks detected; original text speech-ready.
+   - Decision: `SAME_AS_RAW` (Original speech-ready).
 4. **Case 4 (Ambiguous: XyloQ)**:
    - Input: `"The customer requested a refund for product XyloQ."`
-   - Spoken Delivery: Unverified token triggers `NEEDS_REVIEW` and cautions reviewer against blind deployment.
-5. **Case 5 (Multi-Protocol Tech)**:
-   - Input: `"We migrated the dataset from PostgreSQL to Neo4j over IPv6."`
-   - Spoken Delivery: Pronounces `Post-gres-Q-L`, `neo four J`, and `I P V six`.
+   - Spoken Delivery: Unverified token triggers `NEEDS_REVIEW`; does not blindly alter spelling.
+   - Decision: `NEEDS_REVIEW` (Human review recommended).
+5. **Case 5 (Kubernetes Alone - KEEP_RAW)**:
+   - Input: `"Deploying microservices to Kubernetes cluster."`
+   - Spoken Delivery: Original text retained without modification.
+   - Decision: `KEEP_RAW` (Original retained — No change recommended).
 
 ---
 

@@ -12,16 +12,16 @@ const DOMAIN_TERMS_CATALOG: DomainDictEntry[] = [
   {
     term: 'Kubernetes',
     category: 'domain_term',
-    severity: 'high',
-    reason: 'Specialized technology term often truncated or mispronounced as "ku-ber-neets" instead of "koo-ber-NET-eez".',
-    recommendedSpoken: 'koo-ber-net-eez',
+    severity: 'medium',
+    reason: 'Domain vocabulary with potential pronunciation sensitivity; investigated against native Rime synthesis.',
+    recommendedSpoken: 'Kubernetes',
   },
   {
     term: 'PostgreSQL',
     category: 'domain_term',
-    severity: 'high',
-    reason: 'Database name with non-standard hybrid pronunciation ("post-gres-Q-L" or "post-gres").',
-    recommendedSpoken: 'Post-gres-Q-L',
+    severity: 'medium',
+    reason: 'Database name with non-standard hybrid pronunciation; investigated with native Rime G2P.',
+    recommendedSpoken: 'PostgreSQL',
   },
   {
     term: 'IPv6',

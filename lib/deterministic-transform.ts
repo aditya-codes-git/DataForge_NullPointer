@@ -5,6 +5,7 @@ export interface DeterministicResult {
   replacement: string;
   reason: string;
   confidence: 'HIGH' | 'MEDIUM' | 'LOW' | 'NEEDS_REVIEW';
+  action: 'USE_CONTROLLED' | 'KEEP_RAW' | 'NEEDS_REVIEW';
 }
 
 export function transformRiskDeterministically(risk: SpeechRisk): DeterministicResult | null {
@@ -17,6 +18,7 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
       replacement: spelled,
       reason: 'Articulated letter-by-letter and digit-by-digit to prevent slurred pronunciation.',
       confidence: 'HIGH',
+      action: 'USE_CONTROLLED',
     };
   }
 
@@ -33,6 +35,7 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
           replacement: `${words} rupees`,
           reason: 'Converted to natural Indian spoken denomination (lakhs/crores) with explicit rupee currency.',
           confidence: 'HIGH',
+          action: 'USE_CONTROLLED',
         };
       } else if (raw.startsWith('$')) {
         const words = integerToWords(Math.floor(num));
@@ -40,6 +43,7 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
           replacement: `${words} dollars`,
           reason: 'Converted to standard spoken dollar representation.',
           confidence: 'HIGH',
+          action: 'USE_CONTROLLED',
         };
       } else if (raw.startsWith('€')) {
         const words = integerToWords(Math.floor(num));
@@ -47,12 +51,13 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
           replacement: `${words} euros`,
           reason: 'Converted to standard spoken euro representation.',
           confidence: 'HIGH',
+          action: 'USE_CONTROLLED',
         };
       }
     }
   }
 
-  // 3. HTTP status codes
+  // 3. HTTP status codes & acronyms with numbers
   if (risk.category === 'acronym') {
     const httpMatch = /^(HTTP|HTTPS|RFC)\s*([1-5]\d{2})$/i.exec(raw);
     if (httpMatch) {
@@ -60,50 +65,58 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
       const codeDigits = spellDigits(httpMatch[2]);
       return {
         replacement: `${proto} ${codeDigits}`,
-        reason: 'HTTP protocol status code expanded into individual spoken digits for listener clarity.',
+        reason: 'Explicit character and digit delivery for protocol status code prevents ambiguity.',
         confidence: 'HIGH',
+        action: 'USE_CONTROLLED',
       };
     }
   }
 
-  // 4. Domain Terms
+  // 4. Domain Terms: DETECT != CORRECT
+  // Do NOT casually rewrite domain terms (e.g. Kubernetes -> koo-ber-net-eez).
+  // Standard Rime TTS models natively pronounce established domain terms accurately.
   if (risk.category === 'domain_term') {
     const termLower = raw.toLowerCase();
     if (termLower === 'kubernetes') {
       return {
-        replacement: 'koo-ber-net-eez',
-        reason: 'Normalized to standard technical phonetic realization (koo-ber-net-eez).',
+        replacement: raw, // Retain original term
+        reason: 'The detected domain term was already handled naturally by the selected Rime voice; no modification needed.',
         confidence: 'HIGH',
+        action: 'KEEP_RAW',
       };
     }
     if (termLower === 'postgresql') {
       return {
-        replacement: 'Post-gres-Q-L',
-        reason: 'Separated into clear syllabic cadence (Post-gres-Q-L).',
+        replacement: raw,
+        reason: 'Native Rime G2P accurately realizes PostgreSQL; original pronunciation retained.',
         confidence: 'HIGH',
+        action: 'KEEP_RAW',
       };
     }
     if (termLower === 'ipv6') {
       return {
         replacement: 'I P V six',
-        reason: 'Pronounced as initialism with spoken version digit.',
+        reason: 'Network protocol initialism separated from version digit for clear articulation.',
         confidence: 'HIGH',
-      };
-    }
-    if (termLower === 'neo4j') {
-      return {
-        replacement: 'neo four J',
-        reason: 'Disambiguated digit reading within brand name.',
-        confidence: 'HIGH',
+        action: 'USE_CONTROLLED',
       };
     }
     if (termLower === 'grpc') {
       return {
         replacement: 'G R P C',
-        reason: 'Pronounced as individual letters rather than a garbled syllable.',
+        reason: 'Pronounced as individual letters to prevent garbled phoneme blending.',
         confidence: 'HIGH',
+        action: 'USE_CONTROLLED',
       };
     }
+
+    // Default for domain terms: inspect and retain raw unless evidence proves otherwise
+    return {
+      replacement: raw,
+      reason: 'Standard domain terminology verified; original Rime pronunciation retained.',
+      confidence: 'HIGH',
+      action: 'KEEP_RAW',
+    };
   }
 
   // 5. Abbreviations
@@ -124,8 +137,9 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
     if (map[rawClean]) {
       return {
         replacement: map[rawClean],
-        reason: `Written abbreviation expanded to full word "${map[rawClean]}" for listener comprehension.`,
+        reason: `Written abbreviation expanded to full spoken word "${map[rawClean]}" for listener comprehension.`,
         confidence: 'HIGH',
+        action: 'USE_CONTROLLED',
       };
     }
   }
@@ -136,6 +150,7 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
       replacement: raw, // Do not change if uncertain!
       reason: 'Pronunciation could not be verified automatically; requires human review.',
       confidence: 'NEEDS_REVIEW',
+      action: 'NEEDS_REVIEW',
     };
   }
 

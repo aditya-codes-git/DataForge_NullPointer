@@ -44,11 +44,27 @@ export async function POST(req: NextRequest) {
 
     const totalMs = Math.round(performance.now() - startTotal);
 
+    const candidates = [
+      {
+        type: 'raw' as const,
+        label: 'Original Written',
+        text,
+      },
+      {
+        type: 'controlled' as const,
+        label: 'Speech-Ready Candidate',
+        text: controlledResult.controlledText,
+      },
+    ];
+
     const result: ComparisonResult = {
       originalText: text,
       controlledText: controlledResult.controlledText,
+      candidates,
       risks,
+      transformations: controlledResult.changes,
       changes: controlledResult.changes,
+      decision: controlledResult.decision,
       reviewRequired: controlledResult.reviewRequired,
       reviewReasons: controlledResult.reviewReasons,
       rawAudio,

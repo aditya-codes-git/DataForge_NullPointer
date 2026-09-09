@@ -16,7 +16,7 @@ export function RiskList({ risks, selectedRiskId, onSelectRisk }: RiskListProps)
       <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 text-sm text-emerald-800">
         <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
         <p>
-          <strong className="font-semibold">Clean sentence:</strong> No obvious pronunciation or delivery issues detected.
+          <strong className="font-semibold">No speech risks detected:</strong> Original text is directly speech-ready with natural phrasing.
         </p>
       </div>
     );

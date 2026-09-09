@@ -97,7 +97,7 @@ export function Dashboard() {
                   Speech risks detected
                 </h3>
                 <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
-                  {comparison.risks.length} issue{comparison.risks.length === 1 ? '' : 's'} found
+                  {comparison.risks.length} item{comparison.risks.length === 1 ? '' : 's'} investigated
                 </span>
               </div>
 
@@ -117,11 +117,12 @@ export function Dashboard() {
               />
             </section>
 
-            {/* Section 3: Speech-ready version */}
+            {/* Section 3: Investigation & Candidates */}
             <ControlledText
               originalText={comparison.originalText}
               controlledText={comparison.controlledText}
-              changes={comparison.changes}
+              transformations={comparison.transformations || comparison.changes || []}
+              decision={comparison.decision}
               reviewRequired={comparison.reviewRequired}
               reviewReasons={comparison.reviewReasons}
             />

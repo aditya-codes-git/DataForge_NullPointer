@@ -15,10 +15,10 @@ export function AudioComparison({ comparison }: AudioComparisonProps) {
     <section className="space-y-4">
       <div>
         <h3 className="text-xl font-bold tracking-tight text-slate-900">
-          Compare the audio
+          Auditory Comparison
         </h3>
         <p className="mt-0.5 text-xs text-slate-500">
-          Listen to synthetic voice delivery before and after SaySure normalization.
+          Listen to both versions synthesized through the exact same Rime configuration (model: mistv3, voice: astra).
         </p>
       </div>
 
@@ -37,7 +37,7 @@ export function AudioComparison({ comparison }: AudioComparisonProps) {
 
         <AudioPlayer
           title="CONTROLLED"
-          subtitle="Speech-ready text"
+          subtitle="Speech-ready candidate"
           text={controlledText}
           isControlled={true}
           audioDataUri={controlledAudio?.dataUri}

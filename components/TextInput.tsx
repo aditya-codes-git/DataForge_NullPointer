@@ -30,6 +30,11 @@ export const PRESET_CASES: PresetCase[] = [
     name: 'Ambiguous term',
     text: 'The customer requested a refund for product XyloQ.',
   },
+  {
+    id: 'case-5',
+    name: 'Kubernetes alone',
+    text: 'Deploying microservices to Kubernetes cluster.',
+  },
 ];
 
 interface TextInputProps {

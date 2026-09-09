@@ -17,6 +17,15 @@ export type RiskSeverity = 'high' | 'medium' | 'low';
 
 export type ConfidenceLevel = 'HIGH' | 'MEDIUM' | 'LOW' | 'NEEDS_REVIEW';
 
+export type DecisionStatus =
+  | 'USE_CONTROLLED'
+  | 'KEEP_RAW'
+  | 'SAME_AS_RAW'
+  | 'NEEDS_REVIEW'
+  | 'ERROR';
+
+export type TokenAction = 'USE_CONTROLLED' | 'KEEP_RAW' | 'NEEDS_REVIEW';
+
 export interface SpeechRisk {
   id: string;
   text: string;
@@ -32,9 +41,23 @@ export interface SpeechRisk {
 export interface Transformation {
   original: string;
   replacement: string;
+  category: RiskCategory;
   reason: string;
-  type: RiskCategory;
   confidence: ConfidenceLevel;
+  evidenceStatus: 'tested' | 'untested' | 'verified';
+  action: TokenAction;
+}
+
+export interface CandidateItem {
+  type: 'raw' | 'controlled';
+  label: string;
+  text: string;
+}
+
+export interface InvestigationDecision {
+  status: DecisionStatus;
+  summary: string;
+  reason: string;
 }
 
 export interface RimeConfigPublic {
@@ -49,8 +72,11 @@ export interface RimeConfigPublic {
 export interface ComparisonResult {
   originalText: string;
   controlledText: string;
+  candidates: CandidateItem[];
   risks: SpeechRisk[];
-  changes: Transformation[];
+  transformations: Transformation[];
+  changes?: Transformation[];
+  decision: InvestigationDecision;
   reviewRequired: boolean;
   reviewReasons?: string[];
   rawAudio?: {
