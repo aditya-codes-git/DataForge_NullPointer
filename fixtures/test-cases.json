@@ -1,0 +1,142 @@
+[
+  {
+    "id": "CASE-01",
+    "category": "identifier_currency",
+    "input": "Your verification code is A12B9X7 and your total is ₹1,25,000.",
+    "expectedRisk": ["A12B9X7", "₹1,25,000"],
+    "expectedBehavior": "Spells alphanumeric code and expands rupees into lakhs notation."
+  },
+  {
+    "id": "CASE-02",
+    "category": "acronym_tech",
+    "input": "HTTP 429 occurred while connecting to Kubernetes.",
+    "expectedRisk": ["HTTP 429", "Kubernetes"],
+    "expectedBehavior": "Spells HTTP status digits and normalizes Kubernetes pronunciation."
+  },
+  {
+    "id": "CASE-03",
+    "category": "clean_normal",
+    "input": "Hello, how are you today?",
+    "expectedRisk": [],
+    "expectedBehavior": "No speech risk detected; text remains effectively unchanged."
+  },
+  {
+    "id": "CASE-04",
+    "category": "ambiguous_token",
+    "input": "The customer requested a refund for product XyloQ.",
+    "expectedRisk": ["XyloQ"],
+    "expectedBehavior": "Flags uncertainty and triggers NEEDS REVIEW state without hallucinating."
+  },
+  {
+    "id": "CASE-05",
+    "category": "database_domain",
+    "input": "We migrated the dataset from PostgreSQL to Neo4j.",
+    "expectedRisk": ["PostgreSQL", "Neo4j"],
+    "expectedBehavior": "Normalizes database names into intelligible syllabic pronunciations."
+  },
+  {
+    "id": "CASE-06",
+    "category": "indian_address",
+    "input": "Our regional headquarters is at Bandra-Kurla Complex.",
+    "expectedRisk": ["Bandra-Kurla Complex"],
+    "expectedBehavior": "Identifies complex locality name for paced vocalization."
+  },
+  {
+    "id": "CASE-07",
+    "category": "dollar_currency",
+    "input": "Please transfer $4,500.50 to the escrow account.",
+    "expectedRisk": ["$4,500.50"],
+    "expectedBehavior": "Converts dollar notation into full spoken currency units."
+  },
+  {
+    "id": "CASE-08",
+    "category": "network_protocol",
+    "input": "Ensure the server allows both IPv6 and IPv4 traffic.",
+    "expectedRisk": ["IPv6", "IPv4"],
+    "expectedBehavior": "Spells IP versions letter-by-letter with spoken numerals."
+  },
+  {
+    "id": "CASE-09",
+    "category": "web_url",
+    "input": "Visit https://users.rime.ai/docs for API details.",
+    "expectedRisk": ["https://users.rime.ai/docs"],
+    "expectedBehavior": "Identifies URL to avoid robotic slash and dot reading."
+  },
+  {
+    "id": "CASE-10",
+    "category": "email_address",
+    "input": "Send your confirmation to support@example.com immediately.",
+    "expectedRisk": ["support@example.com"],
+    "expectedBehavior": "Spells email address with explicit at and dot vocalization."
+  },
+  {
+    "id": "CASE-11",
+    "category": "acronyms",
+    "input": "The service deployed on AWS requires a valid JWT for authentication.",
+    "expectedRisk": ["AWS", "JWT"],
+    "expectedBehavior": "Detects tech initialisms that need distinct letter reading."
+  },
+  {
+    "id": "CASE-12",
+    "category": "formatted_number",
+    "input": "Order 1,299 was processed yesterday.",
+    "expectedRisk": ["1,299"],
+    "expectedBehavior": "Converts comma-delimited digits into natural cardinal numbers."
+  },
+  {
+    "id": "CASE-13",
+    "category": "leading_zero",
+    "input": "Agent 007 reported to headquarters.",
+    "expectedRisk": ["007"],
+    "expectedBehavior": "Expands leading zeros into digit-by-digit reading."
+  },
+  {
+    "id": "CASE-14",
+    "category": "calendar_date",
+    "input": "Your scheduled hearing is on 03/15/2026.",
+    "expectedRisk": ["03/15/2026"],
+    "expectedBehavior": "Expands slash date format into spoken month and ordinal day."
+  },
+  {
+    "id": "CASE-15",
+    "category": "scheduled_time",
+    "input": "The maintenance window starts at 14:30 EST.",
+    "expectedRisk": ["14:30 EST"],
+    "expectedBehavior": "Clarifies 24-hour time and timezone acronym for spoken clarity."
+  },
+  {
+    "id": "CASE-16",
+    "category": "written_abbreviation",
+    "input": "The shipment weighs approx. 50kg vs. 40kg expected.",
+    "expectedRisk": ["approx.", "vs."],
+    "expectedBehavior": "Expands abbreviations to approximately and versus."
+  },
+  {
+    "id": "CASE-17",
+    "category": "phonetic_name",
+    "input": "Dr. Mukherjee and Siobhan will present the findings.",
+    "expectedRisk": ["Dr. Mukherjee", "Siobhan"],
+    "expectedBehavior": "Detects multi-ethnic proper nouns known for TTS mispronunciation."
+  },
+  {
+    "id": "CASE-18",
+    "category": "microservice_protocol",
+    "input": "The microservices communicate over gRPC and Nginx.",
+    "expectedRisk": ["gRPC", "Nginx"],
+    "expectedBehavior": "Normalizes gRPC to initialism and Nginx to engine-X."
+  },
+  {
+    "id": "CASE-19",
+    "category": "stress_mixed_tokens",
+    "input": "Invoice INV-2024-9X for ₹8,75,500 due on 12/31/2026.",
+    "expectedRisk": ["INV-2024-9X", "₹8,75,500", "12/31/2026"],
+    "expectedBehavior": "Correctly isolates all 3 distinct risk categories without collisions."
+  },
+  {
+    "id": "CASE-20",
+    "category": "plain_statement",
+    "input": "Please proceed to terminal four for boarding.",
+    "expectedRisk": [],
+    "expectedBehavior": "Words are already spelled out; no intervention required."
+  }
+]
