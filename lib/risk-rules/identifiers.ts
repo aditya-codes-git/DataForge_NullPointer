@@ -12,8 +12,11 @@ export function detectIdentifiers(text: string): SpeechRisk[] {
   while ((match = ALPHANUMERIC_REGEX.exec(text)) !== null) {
     const matchedText = match[0];
     
-    // Skip if it looks like an ordinary measurement like 100m, 50kg, 24h
-    if (/^\d+(?:m|cm|mm|km|kg|g|mg|h|min|s|px|rem|em|hz|khz|mhz|ghz|gb|mb|kb|tb)$/i.test(matchedText)) {
+    // Skip if it looks like an ordinary measurement like 100m, 50kg, 24h, or well-known protocol terms like IPv6
+    if (
+      /^\d+(?:m|cm|mm|km|kg|g|mg|h|min|s|px|rem|em|hz|khz|mhz|ghz|gb|mb|kb|tb)$/i.test(matchedText) ||
+      /^(?:ipv[46]|http[1-3])$/i.test(matchedText)
+    ) {
       continue;
     }
 

@@ -70,6 +70,40 @@ describe('Validation and Controlled Text Engine', () => {
     expect(result.reviewReasons.some((r) => r.includes('XyloQ') || r.includes('Ambiguous'))).toBe(true);
   });
 
+  it('handles PostgreSQL v16 as a structured phrase without mangling (Case 2 regression)', async () => {
+    const original = 'Your PostgreSQL v16 migration completed successfully.';
+    const risks = analyzeSpeechRisks(original);
+    const result = await generateControlledText(original, risks);
+
+    expect(result.controlledText).toContain('PostgreSQL');
+    expect(result.controlledText).toContain('16');
+    expect(result.reviewRequired).toBe(true);
+    expect(result.decision.status).toBe('NEEDS_REVIEW');
+    const pgChange = result.changes.find((c) => c.original.includes('PostgreSQL'));
+    expect(pgChange?.action).toBe('NEEDS_REVIEW');
+  });
+
+  it('handles Python 3.12 and Node.js 22 as structured technical expressions (Case 7)', async () => {
+    const original = 'Python 3.12 is installed on Node.js 22.';
+    const risks = analyzeSpeechRisks(original);
+    const result = await generateControlledText(original, risks);
+
+    // Python 3.12 retained intact
+    expect(result.controlledText).toContain('Python 3.12');
+    // Node.js 22 expanded to dot js 22
+    expect(result.controlledText).toContain('Node dot js 22');
+    expect(result.decision.status).toBe('USE_CONTROLLED');
+  });
+
+  it('handles IPv6 support as explicit initialism (Case 8)', async () => {
+    const original = 'IPv6 support is enabled.';
+    const risks = analyzeSpeechRisks(original);
+    const result = await generateControlledText(original, risks);
+
+    expect(result.controlledText).toBe('I P V six support is enabled.');
+    expect(result.decision.status).toBe('USE_CONTROLLED');
+  });
+
   it('fails validation if an identifier is corrupted or truncated', () => {
     const original = 'Code A12B9X7';
     const risks = analyzeSpeechRisks(original);

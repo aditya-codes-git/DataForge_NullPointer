@@ -72,6 +72,30 @@ export function ControlledText({
         <div>{getDecisionBadge()}</div>
       </div>
 
+      {/* 5-Step Investigation Workflow State */}
+      <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-[11px] text-slate-600">
+        <span className="font-semibold text-slate-800">QA Flow:</span>
+        <span className="flex items-center gap-1 text-emerald-700 font-medium">
+          <CheckCircle2 className="h-3 w-3" /> Risk detected
+        </span>
+        <span className="text-slate-300">→</span>
+        <span className="flex items-center gap-1 text-emerald-700 font-medium">
+          <CheckCircle2 className="h-3 w-3" /> Candidate testing
+        </span>
+        <span className="text-slate-300">→</span>
+        <span className="flex items-center gap-1 text-emerald-700 font-medium">
+          <CheckCircle2 className="h-3 w-3" /> Audio ready
+        </span>
+        <span className="text-slate-300">→</span>
+        <span className="flex items-center gap-1 text-emerald-700 font-medium">
+          <CheckCircle2 className="h-3 w-3" /> Audition
+        </span>
+        <span className="text-slate-300">→</span>
+        <span className="flex items-center gap-1 text-indigo-700 font-semibold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+          Decision
+        </span>
+      </div>
+
       {/* Decision rationale callout */}
       {decision && (
         <div
@@ -143,10 +167,10 @@ export function ControlledText({
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Token-by-Token QA Results
+              Item-Level Decisions & QA Results
             </h4>
             <span className="text-[11px] text-slate-400">
-              Tested against Rime synthesis
+              Evidence tested against Rime synthesis
             </span>
           </div>
 
@@ -187,19 +211,19 @@ export function ControlledText({
                   </div>
 
                   <span
-                    className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                       item.action === 'USE_CONTROLLED'
-                        ? 'bg-emerald-50 text-emerald-800'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                         : item.action === 'KEEP_RAW'
-                        ? 'bg-sky-50 text-sky-800'
-                        : 'bg-amber-50 text-amber-800'
+                        ? 'bg-sky-50 text-sky-800 border border-sky-200'
+                        : 'bg-amber-50 text-amber-800 border border-amber-200'
                     }`}
                   >
                     {item.action === 'USE_CONTROLLED'
-                      ? 'Controlled candidate recommended'
+                      ? '✓ Controlled candidate preferred'
                       : item.action === 'KEEP_RAW'
-                      ? 'No change recommended'
-                      : 'Review required'}
+                      ? '✓ Original retained'
+                      : '⚠ Needs review'}
                   </span>
                 </div>
 

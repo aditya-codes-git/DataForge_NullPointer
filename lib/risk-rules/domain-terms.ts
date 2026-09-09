@@ -1,83 +1,114 @@
 import { SpeechRisk, RiskSeverity } from '../schemas';
 
 interface DomainDictEntry {
-  term: string;
+  pattern: RegExp;
   category: 'domain_term';
   severity: RiskSeverity;
   reason: string;
-  recommendedSpoken: string;
+  ruleName: string;
 }
 
 const DOMAIN_TERMS_CATALOG: DomainDictEntry[] = [
+  // Structured Technical Expressions (TERM + VERSION / TERM + NUMBER)
   {
-    term: 'Kubernetes',
+    pattern: /\bPostgreSQL(?:\s+v\d+(?:\.\d+)*)?\b/gi,
+    category: 'domain_term',
+    severity: 'medium',
+    reason: 'Structured technical phrase with version. Neither representation has been verified as clearly superior; requires listener confirmation.',
+    ruleName: 'DOMAIN_POSTGRESQL',
+  },
+  {
+    pattern: /\bPython\s+\d+(?:\.\d+)+\b/gi,
+    category: 'domain_term',
+    severity: 'low',
+    reason: 'Structured technical phrase with decimal version; investigate whether native Rime pronunciation is natural.',
+    ruleName: 'DOMAIN_PYTHON_VERSION',
+  },
+  {
+    pattern: /\bNode\.js(?:\s+\d+)?\b/gi,
+    category: 'domain_term',
+    severity: 'medium',
+    reason: 'Structured technical entity with dot notation and version; investigate spoken clarity.',
+    ruleName: 'DOMAIN_NODEJS',
+  },
+  {
+    pattern: /\bHTTP\/[1-3](?:\.[0-9])?\b/gi,
+    category: 'domain_term',
+    severity: 'medium',
+    reason: 'Protocol designation combining slash separator and version number.',
+    ruleName: 'DOMAIN_HTTP_VERSION',
+  },
+  {
+    pattern: /\bGPT-[0-9](?:\.[0-9])?\b/gi,
+    category: 'domain_term',
+    severity: 'medium',
+    reason: 'Model identifier combining acronym and version number.',
+    ruleName: 'DOMAIN_GPT_VERSION',
+  },
+
+  // Technical Domain Vocabulary
+  {
+    pattern: /\bKubernetes\b/gi,
     category: 'domain_term',
     severity: 'medium',
     reason: 'Domain vocabulary with potential pronunciation sensitivity; investigated against native Rime synthesis.',
-    recommendedSpoken: 'Kubernetes',
+    ruleName: 'DOMAIN_KUBERNETES',
   },
   {
-    term: 'PostgreSQL',
-    category: 'domain_term',
-    severity: 'medium',
-    reason: 'Database name with non-standard hybrid pronunciation; investigated with native Rime G2P.',
-    recommendedSpoken: 'PostgreSQL',
-  },
-  {
-    term: 'IPv6',
+    pattern: /\bIPv6\b/gi,
     category: 'domain_term',
     severity: 'medium',
     reason: 'Network protocol designation combining initialism and version digit ("I-P-V-six").',
-    recommendedSpoken: 'I P V six',
+    ruleName: 'DOMAIN_IPV6',
   },
   {
-    term: 'IPv4',
+    pattern: /\bIPv4\b/gi,
     category: 'domain_term',
     severity: 'medium',
     reason: 'Network protocol designation combining initialism and version digit ("I-P-V-four").',
-    recommendedSpoken: 'I P V four',
+    ruleName: 'DOMAIN_IPV4',
   },
   {
-    term: 'Neo4j',
+    pattern: /\bNeo4j\b/gi,
     category: 'domain_term',
     severity: 'high',
     reason: 'Graph database name with embedded digit ("neo-four-J").',
-    recommendedSpoken: 'neo four J',
+    ruleName: 'DOMAIN_NEO4J',
   },
   {
-    term: 'gRPC',
+    pattern: /\bgRPC\b/gi,
     category: 'domain_term',
     severity: 'high',
     reason: 'Protocol name blending lowercase initial and uppercase initialism ("G-R-P-C").',
-    recommendedSpoken: 'G R P C',
+    ruleName: 'DOMAIN_GRPC',
   },
   {
-    term: 'Nginx',
+    pattern: /\bNginx\b/gi,
     category: 'domain_term',
     severity: 'high',
     reason: 'Web server name pronounced phonetically as "engine-X", completely distinct from spelling.',
-    recommendedSpoken: 'engine X',
+    ruleName: 'DOMAIN_NGINX',
   },
   {
-    term: 'GraphQL',
+    pattern: /\bGraphQL\b/gi,
     category: 'domain_term',
     severity: 'medium',
     reason: 'API technology name combining "graph" and abbreviation "Q-L".',
-    recommendedSpoken: 'Graph Q L',
+    ruleName: 'DOMAIN_GRAPHQL',
   },
   {
-    term: 'PyTorch',
+    pattern: /\bPyTorch\b/gi,
     category: 'domain_term',
     severity: 'medium',
     reason: 'Machine learning framework combining "pie" and "torch".',
-    recommendedSpoken: 'pie torch',
+    ruleName: 'DOMAIN_PYTORCH',
   },
   {
-    term: 'DevOps',
+    pattern: /\bDevOps\b/gi,
     category: 'domain_term',
     severity: 'low',
     reason: 'Compound term ("dev-ops").',
-    recommendedSpoken: 'dev ops',
+    ruleName: 'DOMAIN_DEVOPS',
   },
 ];
 
@@ -85,10 +116,11 @@ export function detectDomainTerms(text: string): SpeechRisk[] {
   const risks: SpeechRisk[] = [];
 
   for (const item of DOMAIN_TERMS_CATALOG) {
-    const regex = new RegExp(`\\b${item.term}\\b`, 'gi');
+    // Reset regex index before execution
+    item.pattern.lastIndex = 0;
     let match: RegExpExecArray | null;
 
-    while ((match = regex.exec(text)) !== null) {
+    while ((match = item.pattern.exec(text)) !== null) {
       risks.push({
         id: `domain-${match.index}`,
         text: match[0],
@@ -98,7 +130,7 @@ export function detectDomainTerms(text: string): SpeechRisk[] {
         start: match.index,
         end: match.index + match[0].length,
         confidence: 'HIGH',
-        ruleMatched: `DOMAIN_${item.term.toUpperCase()}`,
+        ruleMatched: item.ruleName,
       });
     }
   }

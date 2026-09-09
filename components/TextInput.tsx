@@ -12,28 +12,43 @@ export interface PresetCase {
 export const PRESET_CASES: PresetCase[] = [
   {
     id: 'case-1',
-    name: 'Identifier + Currency',
-    text: 'Your verification code is A12B9X7 and your total is ₹1,25,000.',
-  },
-  {
-    id: 'case-2',
     name: 'HTTP 429 + Kubernetes',
     text: 'HTTP 429 occurred while connecting to Kubernetes.',
   },
   {
+    id: 'case-2',
+    name: 'PostgreSQL v16',
+    text: 'Your PostgreSQL v16 migration completed successfully.',
+  },
+  {
     id: 'case-3',
-    name: 'Clean sentence',
-    text: 'Hello, how are you today?',
+    name: 'Currency ₹1,25,000',
+    text: 'Your total is ₹1,25,000.',
   },
   {
     id: 'case-4',
-    name: 'Ambiguous term',
-    text: 'The customer requested a refund for product XyloQ.',
+    name: 'Code A12B9X7',
+    text: 'Your verification code is A12B9X7.',
   },
   {
     id: 'case-5',
-    name: 'Kubernetes alone',
-    text: 'Deploying microservices to Kubernetes cluster.',
+    name: 'Ambiguous XyloQ',
+    text: 'The customer requested a refund for XyloQ.',
+  },
+  {
+    id: 'case-6',
+    name: 'Clean speech',
+    text: 'Hello, how are you today?',
+  },
+  {
+    id: 'case-7',
+    name: 'Python 3.12 & Node.js 22',
+    text: 'Python 3.12 is installed on Node.js 22.',
+  },
+  {
+    id: 'case-8',
+    name: 'IPv6 support',
+    text: 'IPv6 support is enabled.',
   },
 ];
 

@@ -79,19 +79,58 @@ export function validateControlledText(
       }
     }
 
-    // 5. Explicit uncertainty handling
+    // 5. Technical Domain Entity & Version Preservation
+    if (risk.category === 'domain_term') {
+      const termBase = risk.text.split(/[\s/]/)[0]; // e.g. "PostgreSQL" from "PostgreSQL v16"
+      const lowerControlled = controlledText.toLowerCase();
+      const lowerBase = termBase.toLowerCase();
+
+      // Check if technical entity base is preserved or spelled out (e.g. "I P V" or "G R P C" or "Node")
+      const isEntityPreserved =
+        lowerControlled.includes(lowerBase) ||
+        lowerControlled.includes('i p v') ||
+        lowerControlled.includes('g r p c') ||
+        (lowerBase.includes('node') && lowerControlled.includes('node'));
+
+      if (!isEntityPreserved) {
+        reviewRequired = true;
+        reasons.push(`Technical entity "${termBase}" was not preserved in candidate representation.`);
+      }
+
+      // Check version number preservation if risk includes a version like "v16" or "3.12"
+      const versionMatch = risk.text.match(/(?:v|\b)(\d+(?:\.\d+)*)\b/);
+      if (versionMatch) {
+        const verNum = versionMatch[1];
+        const digitWordMap: Record<string, string> = {
+          '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
+          '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine',
+          '16': 'sixteen',
+        };
+        const spelledWord = digitWordMap[verNum];
+        const hasVersion =
+          controlledText.includes(verNum) ||
+          (spelledWord !== undefined && lowerControlled.includes(spelledWord));
+
+        if (!hasVersion) {
+          reviewRequired = true;
+          reasons.push(`Version number for "${risk.text}" was not faithfully preserved.`);
+        }
+      }
+    }
+
+    // 6. Explicit uncertainty handling
     if (risk.category === 'ambiguous' || risk.confidence === 'NEEDS_REVIEW') {
       reviewRequired = true;
       reasons.push(`Ambiguous token "${risk.text}" could not be verified with high certainty.`);
     }
   }
 
-  // 6. Check changes array for any NEEDS_REVIEW
+  // 7. Check changes array for any NEEDS_REVIEW
   for (const change of changes) {
-    if (change.confidence === 'NEEDS_REVIEW') {
+    if (change.confidence === 'NEEDS_REVIEW' || change.action === 'NEEDS_REVIEW') {
       reviewRequired = true;
-      if (!reasons.some(r => r.includes(change.original))) {
-        reasons.push(`Change for "${change.original}" flagged as requiring review.`);
+      if (!reasons.some((r) => r.includes(change.original))) {
+        reasons.push(`Token "${change.original}" flagged as requiring human listener review.`);
       }
     }
   }

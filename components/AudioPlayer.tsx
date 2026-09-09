@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, AlertCircle } from 'lucide-react';
+import { Play, Pause, Download, RotateCcw, AlertCircle } from 'lucide-react';
 
 interface AudioPlayerProps {
   title: string;
@@ -74,6 +74,43 @@ export function AudioPlayer({
     }
   };
 
+  const handleDownload = () => {
+    if (!audioDataUri) return;
+    try {
+      if (audioDataUri.startsWith('data:')) {
+        const parts = audioDataUri.split(',');
+        const byteString = atob(parts[1]);
+        const mimeString = parts[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const prefix = isControlled ? 'saysure-controlled' : 'saysure-raw';
+        a.download = `${prefix}-${Date.now()}.mp3`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return;
+      }
+
+      const a = document.createElement('a');
+      a.href = audioDataUri;
+      const prefix = isControlled ? 'saysure-controlled' : 'saysure-raw';
+      a.download = `${prefix}-${Date.now()}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('[Download Error]:', err);
+    }
+  };
+
   const formatTime = (sec: number) => {
     if (isNaN(sec) || sec === 0) return '0:00';
     const m = Math.floor(sec / 60);
@@ -123,12 +160,12 @@ export function AudioPlayer({
 
       {/* Spoken Text Preview */}
       <div className="my-5 min-h-[48px] rounded-xl bg-slate-50 p-3 text-xs leading-relaxed text-slate-700">
-        "{text}"
+        &ldquo;{text}&rdquo;
       </div>
 
       {/* Audio Controls */}
       {isAvailable && audioDataUri ? (
-        <div className="space-y-3 pt-2">
+        <div className="space-y-4 pt-2">
           {/* Timeline track */}
           <div className="flex items-center gap-3">
             <input
@@ -147,22 +184,37 @@ export function AudioPlayer({
             <span>{formatTime(duration)}</span>
           </div>
 
-          {/* Large obvious Play button */}
-          <div className="flex items-center justify-center pt-2">
+          {/* Action Buttons: Play and Download */}
+          <div className="flex items-center justify-center gap-3 pt-1">
             <button
               onClick={togglePlay}
-              className={`flex h-14 w-14 items-center justify-center rounded-full transition-all active:scale-95 ${
+              className={`flex h-11 items-center gap-2 rounded-xl px-5 font-semibold text-xs transition-all active:scale-95 ${
                 isControlled
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 hover:bg-indigo-700'
-                  : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                  : 'bg-slate-900 text-white hover:bg-slate-800 shadow-sm'
               }`}
               title={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? (
-                <Pause className="h-6 w-6" />
+                <>
+                  <Pause className="h-4 w-4" />
+                  <span>Pause</span>
+                </>
               ) : (
-                <Play className="h-6 w-6 ml-0.5 fill-current" />
+                <>
+                  <Play className="h-4 w-4 ml-0.5 fill-current" />
+                  <span>Play</span>
+                </>
               )}
+            </button>
+
+            <button
+              onClick={handleDownload}
+              className="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 shadow-2xs transition-all hover:border-slate-300 hover:bg-slate-50 active:scale-95"
+              title={`Download ${isControlled ? 'Controlled' : 'RAW'} Audio`}
+            >
+              <Download className="h-4 w-4 text-slate-500" />
+              <span>Download</span>
             </button>
           </div>
         </div>
