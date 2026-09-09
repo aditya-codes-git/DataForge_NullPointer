@@ -14,8 +14,8 @@ import { ErrorState } from './ErrorState';
 import { ComparisonResult, RimeConfigPublic } from '@/lib/schemas';
 
 export function Dashboard() {
-  // Default to Case 1 for an immediate, impressive demo out of the box
-  const [inputText, setInputText] = useState(PRESET_CASES[0].text);
+  // Textarea starts completely empty on initial load/refresh
+  const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [error, setError] = useState<string | null>(null);

@@ -77,7 +77,7 @@ export function TextInput({ text, onChange, onAnalyze, isLoading }: TextInputPro
         <textarea
           value={text}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Paste or write text here to test pronunciation and speech delivery..."
+          placeholder="Paste or type the text you want to check..."
           rows={3}
           className="w-full resize-y rounded-lg border-0 p-0 text-base text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-0"
         />
@@ -88,7 +88,7 @@ export function TextInput({ text, onChange, onAnalyze, isLoading }: TextInputPro
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-xs font-medium text-slate-400 mr-1">Examples:</span>
             {PRESET_CASES.map((preset) => {
-              const isActive = text === preset.text;
+              const isActive = text.trim().length > 0 && text === preset.text;
               return (
                 <button
                   key={preset.id}
