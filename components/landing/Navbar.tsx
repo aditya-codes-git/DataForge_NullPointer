@@ -22,30 +22,22 @@ export function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/90 backdrop-blur-md border-b border-neutral-200/80 py-3 shadow-2xs'
-          : 'bg-white/60 backdrop-blur-xs border-b border-neutral-100 py-3 sm:py-3.5'
+          ? 'bg-white/90 backdrop-blur-md border-b border-neutral-200/80 py-1.5 shadow-2xs'
+          : 'bg-white/60 backdrop-blur-xs border-b border-neutral-100 py-1.5 sm:py-2'
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-12">
-        {/* Brand Anchor: Substantially larger and visually stronger */}
-        <Link href="/" className="flex items-center gap-3.5 group">
-          <div className="relative h-10 w-10 overflow-hidden transition-transform duration-200 group-hover:scale-105">
+        {/* Brand Anchor: SaySure Icon (enlarged to 80px), crisp and prominent */}
+        <Link href="/" className="flex items-center group">
+          <div className="relative h-20 w-20 overflow-hidden transition-transform duration-200 group-hover:scale-105">
             <Image
               src="/logo.png"
-              alt="SaySure Logo"
-              width={40}
-              height={40}
-              className="object-contain"
+              alt="SaySure"
+              width={80}
+              height={80}
+              className="object-contain w-full h-full"
               priority
             />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-tight text-neutral-950 font-sans leading-none">
-              SaySure
-            </span>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-600 mt-1">
-              Voice Delivery QA
-            </span>
           </div>
         </Link>
 

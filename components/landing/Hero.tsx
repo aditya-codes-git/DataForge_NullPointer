@@ -7,10 +7,10 @@ import { ArrowRight, ArrowDown } from 'lucide-react';
 
 export function Hero() {
   return (
-    <section className="relative pt-8 pb-12 sm:pt-12 sm:pb-16 border-b border-neutral-200 overflow-hidden bg-white">
+    <section className="relative pt-4 pb-6 sm:pt-6 sm:pb-8 border-b border-neutral-200 overflow-hidden bg-white">
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
         {/* Horizontal Editorial Grid (Dominant Headline Left + Generous Whitespace & Unboxed Acoustic Wave Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           {/* Left Column: Editorial Headline & Actions (Dominant, ~64-70px desktop) */}
           <div className="lg:col-span-8 flex flex-col justify-center max-w-2xl">
             <motion.h1
@@ -22,7 +22,7 @@ export function Hero() {
               <div>TEXT</div>
               <div>CAN BE</div>
               <div>CORRECT.</div>
-              <div className="mt-1.5 sm:mt-2 text-neutral-400 font-light italic">
+              <div className="mt-1 sm:mt-1.5 text-neutral-400 font-light italic">
                 BUT SOUND
               </div>
               <div className="flex items-baseline gap-2.5 sm:gap-3 flex-wrap">
@@ -51,15 +51,15 @@ export function Hero() {
             </motion.h1>
 
             {/* Supporting Paragraph */}
-            <p className="mt-4 sm:mt-5 font-sans text-base sm:text-lg text-neutral-600 leading-relaxed font-normal max-w-xl">
+            <p className="mt-3 sm:mt-4 font-sans text-sm sm:text-base text-neutral-600 leading-normal font-normal max-w-xl">
               SaySure sits between generated text and TTS. It analyzes technical terms, version numbers, and currency formats, testing candidate representations against your actual voice before users hear them.
             </p>
 
             {/* Action Row */}
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+            <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row items-start sm:items-center gap-3.5 sm:gap-5">
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-2 bg-neutral-950 px-6 py-3 text-xs uppercase tracking-widest font-mono font-semibold text-white hover:bg-indigo-600 transition-colors shadow-xs"
+                className="inline-flex items-center gap-2 bg-neutral-950 px-5 py-2.5 text-xs uppercase tracking-widest font-mono font-semibold text-white hover:bg-indigo-600 transition-colors shadow-xs"
               >
                 <span>Try SaySure</span>
                 <ArrowRight className="h-4 w-4" />
@@ -72,12 +72,6 @@ export function Hero() {
                 <span>Explore Specimen</span>
                 <ArrowDown className="h-3.5 w-3.5" />
               </a>
-            </div>
-
-            {/* Micro Trust Line */}
-            <div className="mt-5 sm:mt-6 flex items-center gap-2 text-[11px] font-mono text-neutral-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-neutral-950" />
-              <span>Real Rime dual synthesis · Zero forced hyphenation · RAW can win</span>
             </div>
           </div>
 
