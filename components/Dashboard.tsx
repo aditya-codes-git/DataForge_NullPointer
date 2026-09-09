@@ -90,6 +90,14 @@ export function Dashboard() {
         {/* Results Flow */}
         {comparison && !isLoading && (
           <div className="space-y-10">
+            {/* Safety Warning Banner if sensitive credential detected */}
+            {comparison.safetyWarning && (
+              <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900 flex items-start gap-3">
+                <span className="font-bold text-sm text-rose-600">⚠ Security Notice:</span>
+                <div>{comparison.safetyWarning}</div>
+              </div>
+            )}
+
             {/* Section 2: Speech risks detected */}
             <section className="space-y-4">
               <div className="flex items-center gap-2.5">
@@ -131,7 +139,7 @@ export function Dashboard() {
             <AudioComparison comparison={comparison} />
 
             {/* Section 5: Verification */}
-            <VerificationPanel />
+            <VerificationPanel comparisonId={comparison.evidenceId} />
           </div>
         )}
 

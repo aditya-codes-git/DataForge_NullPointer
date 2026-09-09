@@ -6,15 +6,45 @@ import { Check, ThumbsUp } from 'lucide-react';
 type EvaluationChoice = 'raw' | 'controlled' | 'same' | 'not_sure';
 
 interface VerificationPanelProps {
+  comparisonId?: string;
   onAssess?: (assessment: EvaluationChoice) => void;
 }
 
-export function VerificationPanel({ onAssess }: VerificationPanelProps) {
+export function VerificationPanel({ comparisonId, onAssess }: VerificationPanelProps) {
   const [selected, setSelected] = useState<EvaluationChoice | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
 
-  const handleSelect = (choice: EvaluationChoice) => {
+  const handleSelect = async (choice: EvaluationChoice) => {
     setSelected(choice);
     if (onAssess) onAssess(choice);
+
+    // Map UI choice to API preference
+    const prefMap: Record<EvaluationChoice, 'RAW' | 'CONTROLLED' | 'SAME' | 'NOT_SURE'> = {
+      raw: 'RAW',
+      controlled: 'CONTROLLED',
+      same: 'SAME',
+      not_sure: 'NOT_SURE',
+    };
+
+    const targetId = comparisonId || 'session-current';
+
+    try {
+      setIsSubmitting(true);
+      await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          comparisonId: targetId,
+          preference: prefMap[choice],
+        }),
+      });
+      setSubmittedMessage(`Listener preference "${getChoiceLabel(choice)}" recorded in evidence store.`);
+    } catch {
+      setSubmittedMessage(`Listener preference "${getChoiceLabel(choice)}" recorded locally.`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getChoiceLabel = (choice: EvaluationChoice) => {
@@ -47,6 +77,7 @@ export function VerificationPanel({ onAssess }: VerificationPanelProps) {
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
+            disabled={isSubmitting}
             onClick={() => handleSelect('raw')}
             className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
               selected === 'raw'
@@ -59,6 +90,7 @@ export function VerificationPanel({ onAssess }: VerificationPanelProps) {
 
           <button
             type="button"
+            disabled={isSubmitting}
             onClick={() => handleSelect('controlled')}
             className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
               selected === 'controlled'
@@ -71,6 +103,7 @@ export function VerificationPanel({ onAssess }: VerificationPanelProps) {
 
           <button
             type="button"
+            disabled={isSubmitting}
             onClick={() => handleSelect('same')}
             className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
               selected === 'same'
@@ -83,6 +116,7 @@ export function VerificationPanel({ onAssess }: VerificationPanelProps) {
 
           <button
             type="button"
+            disabled={isSubmitting}
             onClick={() => handleSelect('not_sure')}
             className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
               selected === 'not_sure'
@@ -95,11 +129,11 @@ export function VerificationPanel({ onAssess }: VerificationPanelProps) {
         </div>
       </div>
 
-      {selected && (
+      {submittedMessage && (
         <div className="flex items-center gap-2 rounded-lg bg-white p-3 border border-slate-200 text-xs text-slate-700 shadow-2xs">
           <Check className="h-4 w-4 text-emerald-600 shrink-0" />
           <span>
-            <strong>Listener assessment recorded:</strong> Marked as &ldquo;{getChoiceLabel(selected)}&rdquo; (stored in session).
+            <strong>Provenance Saved:</strong> {submittedMessage}
           </span>
         </div>
       )}

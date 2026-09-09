@@ -231,6 +231,21 @@ export function ControlledText({
                   <strong className="text-slate-700">Why: </strong>
                   {item.reason}
                 </p>
+
+                {item.candidates && item.candidates.length > 1 && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
+                    <span className="font-semibold text-slate-500">Evaluated Candidates:</span>
+                    {item.candidates.map((c: any, cIdx: number) => (
+                      <span
+                        key={cIdx}
+                        className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 font-mono text-slate-700"
+                        title={c.reason}
+                      >
+                        #{c.rank || cIdx + 1}: &ldquo;{c.candidateText || c.text}&rdquo;
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
