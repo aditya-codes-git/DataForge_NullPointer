@@ -114,14 +114,18 @@ export interface RimeConfigPublic {
 export interface PronunciationEntry {
   term: string;
   canonicalSpokenForm: string;
+  ttsRepresentations?: string[];
+  preferredTtsRepresentations?: string[];
   alternatives?: string[];
   domain: string;
   language: string;
   locale?: string;
   notes?: string;
-  source: 'verified_catalog' | 'user_feedback' | 'contextual_inference';
+  confidenceState?: 'high' | 'medium' | 'low';
+  source?: 'verified_catalog' | 'user_feedback' | 'contextual_inference';
   verificationStatus: 'known' | 'verified' | 'unverified';
-  preferredTtsRepresentations?: string[];
+  compatibleVoices?: string[];
+  compatibleModels?: string[];
   voicePreferences?: Record<string, string>;
   history?: Array<{
     date: string;
@@ -134,17 +138,22 @@ export interface EvidenceRecord {
   id: string;
   term: string;
   originalText: string;
+  originalTextContext?: string;
   riskCategory: RiskCategory;
   candidate: string;
+  candidateRepresentation?: string;
   rimeConfig: {
     model: string;
     voice: string;
     language: string;
     format: string;
   };
+  rimeModel?: string;
+  rimeVoice?: string;
   timestamp: string;
   evaluationMethod: 'human_comparison' | 'deterministic_rules' | 'knowledge_match';
   humanResult?: 'raw_preferred' | 'controlled_preferred' | 'same' | 'not_sure';
+  listenerDecision?: string;
   decision: DecisionStatus;
   verificationStatus: 'observed' | 'verified' | 'unconfirmed';
   benchmarkVersion: string;
@@ -195,6 +204,7 @@ export interface ComparisonResult {
 
 export interface AnalysisResponse {
   text: string;
+  controlledText?: string;
   risks: SpeechRisk[];
   investigation: Array<{
     term: string;

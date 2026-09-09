@@ -22,7 +22,7 @@ describe('SaySure Production API Routes', () => {
     expect(data.risks.length).toBeGreaterThanOrEqual(1);
     expect(data.investigation.length).toBeGreaterThanOrEqual(1);
     expect(data.candidates.length).toBeGreaterThanOrEqual(1);
-    expect(data.candidates[0].candidateText).toContain('Post-Gres-Q-L');
+    expect(data.candidates[0].candidateText).toContain('Postgres cue ell');
   });
 
   it('POST /api/analyze returns 400 for empty text payload', async () => {

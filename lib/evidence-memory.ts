@@ -16,10 +16,27 @@ export function recordEvidence(
   const record: EvidenceRecord = {
     ...entry,
     id,
+    originalTextContext: entry.originalTextContext || entry.originalText,
+    candidateRepresentation: entry.candidateRepresentation || entry.candidate,
+    rimeModel: entry.rimeConfig.model,
+    rimeVoice: entry.rimeConfig.voice,
     timestamp: new Date().toISOString(),
   };
 
   EVIDENCE_STORE.set(id, record);
+
+  // If already verified for a specific voice, seed preference memory
+  if (entry.verificationStatus === 'verified' && entry.term && entry.rimeConfig.voice) {
+    const memoryKey = `${entry.term.toLowerCase()}:${entry.rimeConfig.voice.toLowerCase()}`;
+    const prefText = entry.decision === 'KEEP_RAW' ? entry.originalText : (entry.candidateRepresentation || entry.candidate);
+    const existing = VERIFIED_PREFERENCES.get(memoryKey);
+    VERIFIED_PREFERENCES.set(memoryKey, {
+      preference: prefText,
+      count: (existing?.count || 0) + 1,
+      lastUpdated: new Date().toISOString(),
+    });
+  }
+
   return record;
 }
 
@@ -94,13 +111,15 @@ export function recordHumanVerification(submission: VerificationSubmission): boo
  */
 export function getVerifiedPreference(
   term: string,
-  context?: { voice?: string; domain?: string }
+  context?: string | { voice?: string; domain?: string }
 ): string | null {
-  const voice = context?.voice?.toLowerCase() || 'default';
+  const voice = typeof context === 'string'
+    ? context.toLowerCase()
+    : context?.voice?.toLowerCase() || 'default';
   const specificKey = `${term.toLowerCase()}:${voice}`;
 
   const specificPref = VERIFIED_PREFERENCES.get(specificKey);
-  if (specificPref && specificPref.count >= 2) {
+  if (specificPref && specificPref.count >= 1) {
     return specificPref.preference;
   }
 

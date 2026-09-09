@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     const response: AnalysisResponse = {
       text,
+      controlledText: controlled.controlledText,
       risks,
       investigation,
       candidates: controlled.candidates || [],

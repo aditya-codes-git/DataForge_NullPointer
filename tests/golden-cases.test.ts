@@ -33,10 +33,55 @@ describe('SaySure Production Golden Test Cases', () => {
 
     const result = await generateControlledText(text, risks);
     // Entity and version preserved, no corruptions like "postgresv 16"
-    expect(result.controlledText).toContain('Post-Gres-Q-L version sixteen');
+    expect(result.controlledText).toContain('Postgres cue ell version sixteen');
     expect(result.controlledText).not.toContain('postgresv 16');
     expect(result.changes[0].action).toBe('USE_CONTROLLED');
     expect(result.changes[0].candidates).toBeDefined();
+    const candidateTexts = result.changes[0].candidates?.map((c) => ('candidateText' in c ? c.candidateText : c.text));
+    expect(candidateTexts).toContain('Postgres cue ell version sixteen');
+    expect(candidateTexts).toContain('Postgres Q L version sixteen');
+    expect(candidateTexts).toContain('PostgreSQL version sixteen');
+  });
+
+  // Case 2b: Standalone PostgreSQL
+  it('Golden Case 2b: "PostgreSQL" -> generates natural candidates including Postgres cue ell, Postgres Q L, and PostgreSQL', async () => {
+    const text = 'PostgreSQL';
+    const risks = analyzeSpeechRisks(text);
+
+    expect(risks.length).toBe(1);
+    expect(risks[0].text).toBe('PostgreSQL');
+
+    const result = await generateControlledText(text, risks);
+    expect(result.changes[0].candidates).toBeDefined();
+    const candidateTexts = result.changes[0].candidates?.map((c) => ('candidateText' in c ? c.candidateText : c.text));
+    expect(candidateTexts).toContain('Postgres cue ell');
+    expect(candidateTexts).toContain('Postgres Q L');
+    expect(candidateTexts).toContain('PostgreSQL');
+  });
+
+  // Case 2c: Sentence-level context test
+  it('Golden Case 2c: "The deployment is running on PostgreSQL v16 with gRPC over HTTP/2." -> handles structured entities in sentence context without mangling', async () => {
+    const text = 'The deployment is running on PostgreSQL v16 with gRPC over HTTP/2.';
+    const risks = analyzeSpeechRisks(text);
+
+    // Should detect PostgreSQL v16, gRPC, and HTTP/2
+    expect(risks.length).toBeGreaterThanOrEqual(3);
+    expect(risks.some((r) => r.text.includes('PostgreSQL'))).toBe(true);
+    expect(risks.some((r) => r.text.toLowerCase() === 'grpc')).toBe(true);
+    expect(risks.some((r) => r.text.includes('HTTP/2'))).toBe(true);
+
+    const result = await generateControlledText(text, risks);
+
+    // Entity & version relationships preserved; no malformed concatenations
+    expect(result.controlledText).not.toContain('postgresv 16');
+    expect(result.controlledText).not.toContain('postgresv');
+    expect(result.controlledText).toContain('Postgres cue ell version sixteen');
+
+    // Validation passes: entity, version, and numbers are preserved
+    expect(result.validation.checklistPassed.versionPreservation).toBe(true);
+    expect(result.validation.checklistPassed.numericPreservation).toBe(true);
+    expect(result.validation.checklistPassed.entityPreservation).toBe(true);
+    expect(result.validation.isValid).toBe(true);
   });
 
   // Case 3: SQL

@@ -170,44 +170,59 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
     if (pgVersionMatch) {
       const verDigits = pgVersionMatch[1];
       const verWords = verDigits === '16' ? 'sixteen' : isNaN(Number(verDigits)) ? verDigits : integerToWords(parseInt(verDigits, 10));
-      const candidate1 = `Post-Gres-Q-L version ${verWords}`;
+      const candA = `Postgres cue ell version ${verWords}`;
+      const candB = `Postgres Q L version ${verWords}`;
+      const candC = `PostgreSQL version ${verWords}`;
       return {
-        replacement: candidate1,
-        reason: 'Structured technical phrase with spoken version number. Conventional pronunciation "Post-Gres-Q-L" proposed for TTS comparison.',
+        replacement: candA,
+        reason: 'Structured technical phrase with spoken version number. Natural-language candidate hypotheses generated for comparative Rime testing.',
         confidence: 'HIGH',
         action: 'USE_CONTROLLED',
         rank: 1,
         candidates: [
           {
-            text: candidate1,
-            reason: 'Conventional spoken form separating compound syllables and reading version as words.',
+            text: candA,
+            reason: 'Natural spoken words ("cue ell") designed to guide TTS pronunciation without hyphen chains.',
             rank: 1,
           },
           {
-            text: `PostgreSQL version ${verWords}`,
-            reason: 'Preserves raw entity name while expanding version indicator.',
+            text: candB,
+            reason: 'Spoken abbreviation with uppercase letters.',
             rank: 2,
+          },
+          {
+            text: candC,
+            reason: 'Preserves raw entity name while expanding version indicator.',
+            rank: 3,
           },
         ],
       };
     }
     if (termLower === 'postgresql') {
+      const candA = 'Postgres cue ell';
+      const candB = 'Postgres Q L';
+      const candC = 'PostgreSQL';
       return {
-        replacement: 'Post-Gres-Q-L',
-        reason: 'Conventional spoken syllable separation for database name.',
+        replacement: candA,
+        reason: 'Natural-language pronunciation candidate hypotheses generated for comparative Rime testing.',
         confidence: 'HIGH',
         action: 'USE_CONTROLLED',
         rank: 1,
         candidates: [
           {
-            text: 'Post-Gres-Q-L',
-            reason: 'Conventional spoken representation for PostgreSQL.',
+            text: candA,
+            reason: 'Natural words ("cue ell") to guide Rime pronunciation.',
             rank: 1,
           },
           {
-            text: 'Postgres',
-            reason: 'Informal spoken shorthand for PostgreSQL.',
+            text: candB,
+            reason: 'Spoken abbreviation with uppercase letters.',
             rank: 2,
+          },
+          {
+            text: candC,
+            reason: 'Original written representation tested as baseline candidate.',
+            rank: 3,
           },
         ],
       };
@@ -310,16 +325,26 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
     // gRPC
     if (termLower === 'grpc') {
       return {
-        replacement: 'G R P C',
-        reason: 'Pronounced as individual letters to prevent garbled phoneme blending.',
+        replacement: 'gee are pee see',
+        reason: 'Natural spoken candidate hypotheses generated for comparative Rime testing.',
         confidence: 'HIGH',
         action: 'USE_CONTROLLED',
         rank: 1,
         candidates: [
           {
-            text: 'G R P C',
-            reason: 'Explicit letter-by-letter delivery.',
+            text: 'gee are pee see',
+            reason: 'Natural words to guide Rime pronunciation.',
             rank: 1,
+          },
+          {
+            text: 'G R P C',
+            reason: 'Explicit uppercase initialism.',
+            rank: 2,
+          },
+          {
+            text: 'gRPC',
+            reason: 'Raw baseline candidate.',
+            rank: 3,
           },
         ],
       };
@@ -328,16 +353,26 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
     // GraphQL
     if (termLower === 'graphql') {
       return {
-        replacement: 'Graph Q L',
-        reason: 'Articulates "Graph" followed by initialism "Q L" for clear spoken delivery.',
+        replacement: 'Graph cue ell',
+        reason: 'Natural spoken candidate hypotheses generated for comparative Rime testing.',
         confidence: 'HIGH',
         action: 'USE_CONTROLLED',
         rank: 1,
         candidates: [
           {
-            text: 'Graph Q L',
-            reason: 'Word root followed by explicit initialism.',
+            text: 'Graph cue ell',
+            reason: 'Natural words for suffix initialism.',
             rank: 1,
+          },
+          {
+            text: 'Graph Q L',
+            reason: 'Explicit uppercase letters.',
+            rank: 2,
+          },
+          {
+            text: 'GraphQL',
+            reason: 'Raw baseline candidate.',
+            rank: 3,
           },
         ],
       };
@@ -346,16 +381,80 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
     // WebRTC
     if (termLower === 'webrtc') {
       return {
-        replacement: 'Web R T C',
-        reason: 'Articulates "Web" followed by initialism "R T C" for clear spoken delivery.',
+        replacement: 'Web are tee see',
+        reason: 'Natural spoken candidate hypotheses generated for comparative Rime testing.',
         confidence: 'HIGH',
         action: 'USE_CONTROLLED',
         rank: 1,
         candidates: [
           {
-            text: 'Web R T C',
-            reason: 'Word root followed by explicit initialism.',
+            text: 'Web are tee see',
+            reason: 'Natural words for protocol initialism.',
             rank: 1,
+          },
+          {
+            text: 'Web R T C',
+            reason: 'Explicit uppercase letters.',
+            rank: 2,
+          },
+          {
+            text: 'WebRTC',
+            reason: 'Raw baseline candidate.',
+            rank: 3,
+          },
+        ],
+      };
+    }
+
+    // CUDA 12.6 / CUDA
+    const cudaMatch = /^cuda(?:\s+(\d+(?:\.\d+)*))?$/i.exec(raw);
+    if (cudaMatch) {
+      const ver = cudaMatch[1];
+      const verText = ver === '12.6' ? 'twelve point six' : ver;
+      const replacement = verText ? `CUDA ${verText}` : 'CUDA';
+      return {
+        replacement,
+        reason: 'Structured computing platform and version entity.',
+        confidence: 'HIGH',
+        action: 'USE_CONTROLLED',
+        rank: 1,
+        candidates: [
+          {
+            text: replacement,
+            reason: 'Natural spoken decimal version delivery.',
+            rank: 1,
+          },
+          {
+            text: raw,
+            reason: 'Raw baseline candidate.',
+            rank: 2,
+          },
+        ],
+      };
+    }
+
+    // Ubuntu 24.04 / Ubuntu
+    const ubuntuMatch = /^ubuntu(?:\s+(\d+(?:\.\d+)*))?$/i.exec(raw);
+    if (ubuntuMatch) {
+      const ver = ubuntuMatch[1];
+      const verText = ver === '24.04' ? 'twenty-four point zero four' : ver;
+      const replacement = verText ? `Ubuntu ${verText}` : 'Ubuntu';
+      return {
+        replacement,
+        reason: 'Structured OS distribution and version entity.',
+        confidence: 'HIGH',
+        action: 'USE_CONTROLLED',
+        rank: 1,
+        candidates: [
+          {
+            text: replacement,
+            reason: 'Natural spoken version delivery.',
+            rank: 1,
+          },
+          {
+            text: raw,
+            reason: 'Raw baseline candidate.',
+            rank: 2,
           },
         ],
       };

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "1_postgresql_raw",
+    "text": "PostgreSQL",
+    "status": 200,
+    "bytes": 34654,
+    "contentType": "application/json",
+    "latencyMs": 1311,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\1_postgresql_raw.mp3"
+  },
+  {
+    "name": "2_postgres_cue_ell",
+    "text": "Postgres cue ell",
+    "status": 200,
+    "bytes": 54494,
+    "contentType": "application/json",
+    "latencyMs": 395,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\2_postgres_cue_ell.mp3"
+  },
+  {
+    "name": "3_postgres_q_l",
+    "text": "Postgres Q L",
+    "status": 200,
+    "bytes": 56414,
+    "contentType": "application/json",
+    "latencyMs": 391,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\3_postgres_q_l.mp3"
+  },
+  {
+    "name": "4_postgresql_v16_spoken",
+    "text": "PostgreSQL version sixteen",
+    "status": 200,
+    "bytes": 56414,
+    "contentType": "application/json",
+    "latencyMs": 401,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\4_postgresql_v16_spoken.mp3"
+  },
+  {
+    "name": "5_postgres_cue_ell_v16",
+    "text": "Postgres cue ell version sixteen",
+    "status": 200,
+    "bytes": 75614,
+    "contentType": "application/json",
+    "latencyMs": 690,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\5_postgres_cue_ell_v16.mp3"
+  },
+  {
+    "name": "6_full_sentence_raw",
+    "text": "The deployment is running on PostgreSQL v16 with gRPC over HTTP/2.",
+    "status": 200,
+    "bytes": 218334,
+    "contentType": "application/json",
+    "latencyMs": 718,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\6_full_sentence_raw.mp3"
+  },
+  {
+    "name": "7_full_sentence_controlled",
+    "text": "The deployment is running on Postgres cue ell version sixteen with gee are pee see over HTTP two.",
+    "status": 200,
+    "bytes": 236894,
+    "contentType": "application/json",
+    "latencyMs": 562,
+    "filePath": "D:\\DataForge\\DataForge_NullPointer\\scratch\\7_full_sentence_controlled.mp3"
+  }
+]

@@ -75,14 +75,14 @@ describe('Validation and Controlled Text Engine', () => {
     const risks = analyzeSpeechRisks(original);
     const result = await generateControlledText(original, risks);
 
-    expect(result.controlledText).toContain('Post-Gres-Q-L version sixteen');
+    expect(result.controlledText).toContain('Postgres cue ell version sixteen');
     expect(result.controlledText).not.toContain('postgresv 16');
     const pgChange = result.changes.find((c) => c.original.includes('PostgreSQL'));
     expect(pgChange?.action).toBe('USE_CONTROLLED');
     expect(pgChange?.candidates).toBeDefined();
     expect(pgChange?.candidates?.length).toBeGreaterThanOrEqual(2);
     expect(pgChange?.candidates?.[0].rank).toBe(1);
-    expect(pgChange?.candidates?.[0].text).toContain('Post-Gres-Q-L version sixteen');
+    expect(pgChange?.candidates?.[0].candidateText || pgChange?.candidates?.[0].text).toContain('Postgres cue ell version sixteen');
   });
 
   it('generates multiple ranked candidates for ambiguous acronyms like SQL', async () => {
@@ -106,8 +106,8 @@ describe('Validation and Controlled Text Engine', () => {
 
     // Python 3.12 retained intact
     expect(result.controlledText).toContain('Python 3.12');
-    // Node.js 22 expanded to dot js 22
-    expect(result.controlledText).toContain('Node dot js 22');
+    // Node.js 22 natural spoken conversion to twenty-two
+    expect(result.controlledText).toContain('Node dot js twenty-two');
     expect(result.decision.status).toBe('USE_CONTROLLED');
   });
 

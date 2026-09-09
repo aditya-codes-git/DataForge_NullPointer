@@ -113,11 +113,13 @@ export function analyzeSpeechRisks(text: string): SpeechRisk[] {
     };
   });
 
-  // Resolve overlaps: Priority to higher severity, longer span, or earlier start
+  // Resolve overlaps: Priority to earlier start, higher severity, then longer span (e.g. HTTP/2 over HTTP, PostgreSQL v16 over PostgreSQL)
   const sorted = enriched.sort((a, b) => {
     if (a.start !== b.start) return a.start - b.start;
     const severityWeight = { high: 3, medium: 2, low: 1 };
-    return severityWeight[b.severity] - severityWeight[a.severity];
+    const sevDiff = severityWeight[b.severity] - severityWeight[a.severity];
+    if (sevDiff !== 0) return sevDiff;
+    return (b.end - b.start) - (a.end - a.start);
   });
 
   const nonOverlapping: SpeechRisk[] = [];

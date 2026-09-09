@@ -33,12 +33,13 @@ export function generateCandidatesForRisks(
 
     // 1. Check Pronunciation Knowledge Base first
     const knowledge = lookupPronunciationKnowledge(raw);
-    if (knowledge && knowledge.preferredTtsRepresentations && knowledge.preferredTtsRepresentations.length > 0) {
-      knowledge.preferredTtsRepresentations.slice(0, 3).forEach((rep, idx) => {
+    const ttsReps = knowledge?.ttsRepresentations || knowledge?.preferredTtsRepresentations;
+    if (knowledge && ttsReps && ttsReps.length > 0) {
+      ttsReps.slice(0, 3).forEach((rep, idx) => {
         candidates.push({
           candidateText: rep,
           text: rep,
-          reason: `Knowledge catalog candidate (${knowledge.canonicalSpokenForm}): preferred spoken representation.`,
+          reason: `Knowledge catalog candidate (${knowledge.canonicalSpokenForm}): natural spoken representation.`,
           source: 'knowledge_base',
           confidenceState: knowledge.verificationStatus === 'verified' ? 'high' : 'medium',
           requiresVerification: knowledge.verificationStatus !== 'verified',
