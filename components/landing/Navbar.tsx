@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,71 +12,79 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { label: 'Product', href: '#product' },
-    { label: 'How it Works', href: '#how-it-works' },
-    { label: 'Intelligence', href: '#intelligence' },
-    { label: 'Developers', href: '#developers' },
-    { label: 'Architecture', href: '#architecture' },
-  ];
-
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/85 backdrop-blur-md border-b border-slate-200/70 shadow-xs py-2.5'
-          : 'bg-transparent py-4 border-b border-transparent'
+          ? 'bg-white/90 backdrop-blur-md border-b border-neutral-200/80 py-3 shadow-2xs'
+          : 'bg-white/60 backdrop-blur-xs border-b border-neutral-100 py-3 sm:py-3.5'
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6">
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="relative h-8 w-8 overflow-hidden rounded-lg transition-transform group-hover:scale-105">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-12">
+        {/* Brand Anchor: Substantially larger and visually stronger */}
+        <Link href="/" className="flex items-center gap-3.5 group">
+          <div className="relative h-10 w-10 overflow-hidden transition-transform duration-200 group-hover:scale-105">
             <Image
               src="/logo.png"
               alt="SaySure Logo"
-              width={32}
-              height={32}
+              width={40}
+              height={40}
               className="object-contain"
               priority
             />
           </div>
-          <span className="text-lg font-bold tracking-tight text-slate-900">SaySure</span>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold tracking-tight text-neutral-950 font-sans leading-none">
+              SaySure
+            </span>
+            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-600 mt-1">
+              Voice Delivery QA
+            </span>
+          </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-7">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-sm font-medium text-slate-600 hover:text-slate-950 transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
+        {/* Minimal Editorial Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-9">
+          <a
+            href="#story"
+            className="text-xs uppercase tracking-widest font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
+          >
+            The Process
+          </a>
+          <a
+            href="#specimen"
+            className="text-xs uppercase tracking-widest font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
+          >
+            Specimen
+          </a>
+          <a
+            href="#interactive"
+            className="text-xs uppercase tracking-widest font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
+          >
+            Laboratory
+          </a>
+          <a
+            href="#developers"
+            className="text-xs uppercase tracking-widest font-mono text-neutral-500 hover:text-neutral-950 transition-colors"
+          >
+            Developers
+          </a>
         </nav>
 
-        {/* Right CTAs */}
-        <div className="hidden md:flex items-center gap-3">
+        {/* Minimal Action CTA */}
+        <div className="hidden md:flex items-center gap-6">
           <Link
             href="/dashboard"
-            className="text-sm font-medium text-slate-700 hover:text-slate-950 px-3 py-1.5 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider font-semibold text-neutral-950 border-b-2 border-neutral-950 pb-0.5 hover:text-indigo-600 hover:border-indigo-600 transition-all"
           >
-            Sign In
-          </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-slate-800 transition-all active:scale-98"
-          >
-            <span>Launch Dashboard</span>
-            <ArrowRight className="h-4 w-4" />
+            <span>Launch Console</span>
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
@@ -84,49 +92,60 @@ export function Navbar() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-          aria-label="Toggle Navigation Menu"
+          className="md:hidden p-2 text-neutral-700 hover:text-neutral-950 transition-colors"
+          aria-label="Toggle navigation"
         >
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
-      {/* Animated Mobile Drawer */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="md:hidden border-b border-slate-200 bg-white/95 backdrop-blur-lg px-4 pt-3 pb-6 shadow-sm overflow-hidden"
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="md:hidden border-b border-neutral-200 bg-white px-6 pt-4 pb-8"
           >
-            <div className="flex flex-col gap-3">
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-md transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
+            <div className="flex flex-col gap-4 font-mono text-xs uppercase tracking-widest">
+              <a
+                href="#story"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 text-neutral-600 hover:text-neutral-950"
+              >
+                The Process
+              </a>
+              <a
+                href="#specimen"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 text-neutral-600 hover:text-neutral-950"
+              >
+                Specimen
+              </a>
+              <a
+                href="#interactive"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 text-neutral-600 hover:text-neutral-950"
+              >
+                Laboratory
+              </a>
+              <a
+                href="#developers"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 text-neutral-600 hover:text-neutral-950"
+              >
+                Developers
+              </a>
+              <div className="pt-4 border-t border-neutral-100">
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-md"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-none bg-neutral-950 py-3 text-xs uppercase tracking-wider font-mono text-white"
                 >
-                  Sign In
-                </Link>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
-                >
-                  <span>Launch Dashboard</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <span>Launch Console</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </div>

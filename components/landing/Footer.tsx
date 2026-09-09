@@ -6,56 +6,58 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white py-12">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Brand & Subtitle */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-          <Link href="/" className="flex items-center gap-2.5">
+    <footer className="border-t border-neutral-200 bg-white py-14">
+      <div className="mx-auto max-w-7xl px-6 lg:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+        {/* Brand Anchor */}
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.png"
               alt="SaySure Logo"
-              width={28}
-              height={28}
+              width={36}
+              height={36}
               className="object-contain"
             />
-            <span className="text-base font-bold tracking-tight text-slate-900">SaySure</span>
+            <span className="text-lg font-bold tracking-tight text-neutral-950 font-sans">
+              SaySure
+            </span>
           </Link>
-          <span className="hidden sm:inline text-slate-300">|</span>
-          <p className="text-xs text-slate-500">
+          <span className="text-neutral-300">/</span>
+          <span className="font-mono text-xs text-neutral-500">
             Voice delivery QA for production TTS.
-          </p>
+          </span>
         </div>
 
-        {/* Links */}
-        <nav className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-slate-600">
-          <a href="#product" className="hover:text-slate-950 transition-colors">
-            Product
+        {/* Minimal Links */}
+        <nav className="flex flex-wrap items-center gap-8 font-mono text-xs uppercase tracking-widest text-neutral-500">
+          <a href="#story" className="hover:text-neutral-950 transition-colors">
+            Process
           </a>
-          <a href="#how-it-works" className="hover:text-slate-950 transition-colors">
-            How it Works
+          <a href="#specimen" className="hover:text-neutral-950 transition-colors">
+            Specimen
           </a>
-          <a href="#developers" className="hover:text-slate-950 transition-colors">
+          <a href="#interactive" className="hover:text-neutral-950 transition-colors">
+            Laboratory
+          </a>
+          <a href="#developers" className="hover:text-neutral-950 transition-colors">
             Developers
           </a>
-          <a href="#architecture" className="hover:text-slate-950 transition-colors">
-            Architecture
-          </a>
-          <Link href="/dashboard" className="hover:text-indigo-600 font-semibold transition-colors">
+          <Link href="/dashboard" className="text-neutral-950 font-bold hover:text-indigo-600 transition-colors">
             Dashboard
           </Link>
           <a
             href="https://users.rime.ai/docs"
             target="_blank"
             rel="noreferrer"
-            className="hover:text-slate-950 transition-colors"
+            className="hover:text-neutral-950 transition-colors"
           >
             Rime Docs
           </a>
         </nav>
 
         {/* Copyright */}
-        <div className="text-xs text-slate-400">
-          &copy; {new Date().getFullYear()} SaySure. Built with Rime TTS.
+        <div className="font-mono text-xs text-neutral-400">
+          &copy; {new Date().getFullYear()} SAYSURE.
         </div>
       </div>
     </footer>
