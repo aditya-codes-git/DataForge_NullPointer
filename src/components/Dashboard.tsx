@@ -14,6 +14,7 @@ import { ErrorState } from './ErrorState';
 import { ComparisonResult, RimeConfigPublic } from '@/lib/schemas';
 import { saveAnalysisToHistory } from '@/lib/history-store';
 import { getClientConfig, getLoadedClientConfig } from '@/lib/config-client';
+import { motion } from 'framer-motion';
 
 export function Dashboard() {
   // Textarea starts completely empty on initial load/refresh
@@ -100,14 +101,22 @@ export function Dashboard() {
 
         {/* Results Flow */}
         {comparison && !isLoading && (
-          <div className="space-y-10">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="space-y-10"
+          >
             {/* Safety Warning Banner if sensitive credential detected */}
             {comparison.safetyWarning && (
-              <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900 flex items-start gap-3">
+              <div className="rounded-none border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900 flex items-start gap-3">
                 <span className="font-bold text-sm text-rose-600">⚠ Security Notice:</span>
                 <div>{comparison.safetyWarning}</div>
               </div>
             )}
+
+            {/* Section 1: Audio comparison (The Core Centerpiece & Proof) */}
+            <AudioComparison comparison={comparison} />
 
             {/* Section 2: Speech risks detected */}
             <section className="space-y-4">
@@ -128,7 +137,7 @@ export function Dashboard() {
                 onSelectRisk={setSelectedRiskId}
               />
 
-              {/* Explanations */}
+              {/* Explanations & Investigation details */}
               <RiskList
                 risks={comparison.risks}
                 selectedRiskId={selectedRiskId}
@@ -136,7 +145,7 @@ export function Dashboard() {
               />
             </section>
 
-            {/* Section 3: Investigation & Candidates */}
+            {/* Section 3: Candidate explanations, transformations & validation details */}
             <ControlledText
               originalText={comparison.originalText}
               controlledText={comparison.controlledText}
@@ -146,12 +155,9 @@ export function Dashboard() {
               reviewReasons={comparison.reviewReasons}
             />
 
-            {/* Section 4: Audio comparison (The Centerpiece) */}
-            <AudioComparison comparison={comparison} />
-
-            {/* Section 5: Verification */}
+            {/* Section 4: Human verification & evidence/provenance */}
             <VerificationPanel comparisonId={comparison.evidenceId} />
-          </div>
+          </motion.div>
         )}
 
         {/* Section 6: Rime Configuration footer card */}

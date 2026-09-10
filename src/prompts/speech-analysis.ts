@@ -80,20 +80,25 @@ Do NOT arbitrarily force one pronunciation.
 ==================================================
 TECHNICAL TERM + VERSION
 ==================================================
-Treat these as structured phrases.
+Treat these as structured compositional phrases (ENTITY + VERSION or standalone VERSION).
 Examples:
-- PostgreSQL v16 -> "Post-Gres-Q-L version sixteen"
-- Python 3.12
-- Node.js 22 -> "Node dot js twenty-two"
-- React 19
-- GPT-5.6
-- CUDA 12.4
+- Kubernetes v1.34 -> Candidate 1: "Kubernetes version one point three four", Candidate 2: "Kubernetes version one point thirty-four", Candidate 3: "Kubernetes v1.34"
+- PostgreSQL v16 -> Candidate 1: "Postgres cue ell version sixteen", Candidate 2: "Postgres Q L version sixteen", Candidate 3: "PostgreSQL version sixteen"
+- Python 3.12 -> Candidate 1: "Python three point one two", Candidate 2: "Python three point twelve", Candidate 3: "Python 3.12"
+- Node.js 22 -> Candidate 1: "Node dot js twenty-two", Candidate 2: "Node dot js 22", Candidate 3: "Node.js 22"
+- CUDA 12.6 -> Candidate 1: "CUDA twelve point six", Candidate 2: "CUDA 12.6"
+- Ubuntu 24.04 -> Candidate 1: "Ubuntu twenty-four point zero four", Candidate 2: "Ubuntu twenty-four point o four", Candidate 3: "Ubuntu 24.04"
+- React 19 -> Candidate 1: "React nineteen", Candidate 2: "React 19"
+- GPT-5.6 -> Candidate 1: "G P T five point six", Candidate 2: "GPT five point six", Candidate 3: "GPT-5.6"
+- v1.34.7 -> Candidate 1: "version one point three four point seven", Candidate 2: "version one point thirty-four point seven", Candidate 3: "v1.34.7"
 
 Rules:
-- Do not corrupt the product name.
-- Do not merge the product name with its version (e.g. NEVER "postgresv 16").
-- Do not alter the version number.
-- Generate a natural spoken representation.
+- Do not corrupt or swallow the product/entity name.
+- NEVER merge the entity name with its version (e.g. NEVER "postgresv16", "kubernetesv1.34", or "postgresv 16").
+- The version value must be faithfully preserved and recoverable — digits must convert to words in controlled candidates (e.g., "one point three four" or "one point thirty-four" for 1.34).
+- Decimal and multi-segment readings are genuinely ambiguous: generate ranked candidates for digit-by-digit vs. grouped conventions.
+- Always provide the raw baseline as a valid winnable candidate so listener comparison can choose RAW when it delivers natural spoken clarity.
+- Non-version decimals (e.g. currency ₹12.50, measurements 12.50 kg, percentages 12.5%, dates 12.05.2026) must NOT be routed through version handling.
 
 ==================================================
 ALPHANUMERIC IDENTIFIERS

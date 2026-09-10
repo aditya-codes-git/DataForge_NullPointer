@@ -135,7 +135,7 @@ SaySure includes a dedicated double-blind verification workflow ([`src/component
 ## 9. Reproduction Guide
 
 ### Automated Vitest Suite (Offline / Deterministic)
-Run all 64 automated tests validating risk rules, candidate ranking, 10-point preservation, and golden test cases:
+Run all 78 automated tests validating risk rules, version handling, candidate ranking, 10-point preservation, and golden test cases:
 ```bash
 npx vitest run tests/golden-cases.test.ts
 npx vitest run

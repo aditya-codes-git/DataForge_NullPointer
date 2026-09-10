@@ -1,4 +1,5 @@
 import { SpeechRisk, DetectionMethod, RiskCategory } from './schemas';
+import { detectVersions } from './risk-rules/versions';
 import { detectIdentifiers } from './risk-rules/identifiers';
 import { detectCurrency } from './risk-rules/currency';
 import { detectNumbers } from './risk-rules/numbers';
@@ -54,6 +55,7 @@ export function analyzeSpeechRisks(text: string): SpeechRisk[] {
   // Gather detections across all categories
   const rawDetections: Partial<SpeechRisk>[] = [
     // Structural / Deterministic
+    ...detectVersions(text),
     ...detectIdentifiers(text),
     ...detectCurrency(text),
     ...detectDates(text),
@@ -78,11 +80,12 @@ export function analyzeSpeechRisks(text: string): SpeechRisk[] {
     const detectionMethod: DetectionMethod = isContextual ? 'contextual' : 'deterministic';
 
     // In SaySure, detection does NOT mean automatic intervention.
-    // Certain items (Kubernetes, known technical terms, ambiguous acronyms) MUST be investigated.
+    // Certain items (Kubernetes, known technical terms, ambiguous acronyms, versions) MUST be investigated.
     const investigationRequired =
       isContextual ||
       category === 'acronym' ||
       category === 'currency' ||
+      category === 'version' ||
       category === 'ambiguous';
 
     const interventionRecommended =
@@ -93,6 +96,7 @@ export function analyzeSpeechRisks(text: string): SpeechRisk[] {
     const hints: string[] = [];
     if (category === 'acronym') hints.push('Determine whether spoken letter-by-letter or as word.');
     if (category === 'currency') hints.push('Check voice/locale suitability (e.g., lakh/crore vs thousands).');
+    if (category === 'version') hints.push('Investigate spoken version articulation (digit-by-digit vs whole number).');
     if (category === 'domain_term') hints.push('Test native Rime rendering before applying phonetic transformation.');
     if (category === 'ambiguous') hints.push('Unverified proper noun or brand; human confirmation required.');
 

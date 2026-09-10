@@ -69,6 +69,26 @@ const PRONUNCIATION_CATALOG: PronunciationEntry[] = [
       default: 'Kubernetes',
     },
   },
+  {
+    term: 'Kubernetes v1.34',
+    canonicalSpokenForm: 'Kubernetes version one point three four',
+    alternatives: ['Kubernetes 1.34'],
+    domain: 'software',
+    language: 'en',
+    notes: 'Structured container orchestration platform and release version.',
+    source: 'verified_catalog',
+    verificationStatus: 'known',
+    ttsRepresentations: [
+      'Kubernetes version one point three four',
+      'Kubernetes version one point thirty-four',
+      'Kubernetes v1.34',
+    ],
+    preferredTtsRepresentations: [
+      'Kubernetes version one point three four',
+      'Kubernetes version one point thirty-four',
+      'Kubernetes v1.34',
+    ],
+  },
 
   // 3. SQL
   {
@@ -217,8 +237,8 @@ const PRONUNCIATION_CATALOG: PronunciationEntry[] = [
     notes: 'Programming language and decimal version.',
     source: 'verified_catalog',
     verificationStatus: 'known',
-    ttsRepresentations: ['Python 3.12', 'Python three point twelve'],
-    preferredTtsRepresentations: ['Python 3.12', 'Python three point twelve'],
+    ttsRepresentations: ['Python three point one two', 'Python three point twelve', 'Python 3.12'],
+    preferredTtsRepresentations: ['Python three point one two', 'Python three point twelve', 'Python 3.12'],
   },
 
   // 11. NumPy

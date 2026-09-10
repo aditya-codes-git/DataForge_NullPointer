@@ -1,5 +1,6 @@
 import { SpeechRisk, Transformation, RiskCandidate } from './schemas';
-import { integerToWords, indianNumberToWords, spellDigits } from './number-words';
+import { integerToWords, indianNumberToWords, spellDigits, formatVersionSpoken } from './number-words';
+import { parseVersionInfo } from './risk-rules/versions';
 
 export interface DeterministicResult {
   replacement: string;
@@ -8,6 +9,202 @@ export interface DeterministicResult {
   action: 'USE_CONTROLLED' | 'KEEP_RAW' | 'NEEDS_REVIEW';
   rank?: number;
   candidates?: RiskCandidate[];
+}
+
+/**
+ * General deterministic version transformer.
+ * Covers:
+ * - ENTITY vN (PostgreSQL v16)
+ * - ENTITY vN.N (Kubernetes v1.34)
+ * - ENTITY vN.N.N (Kubernetes v1.34.7)
+ * - ENTITY N.N (Python 3.12, CUDA 12.4, CUDA 12.6, Ubuntu 24.04)
+ * - ENTITY N (Node.js 22, React 19)
+ * - ENTITY-N.N (GPT-5.6)
+ * - Standalone vN, vN.N, vN.N.N (v1.34, v1.34.7, v16)
+ */
+export function transformVersionDeterministically(raw: string): DeterministicResult | null {
+  const info = parseVersionInfo(raw);
+  if (!info) return null;
+
+  const { entity, separator, hasVPrefix, versionDigits } = info;
+  const spokenVer = formatVersionSpoken(versionDigits);
+
+  // 1. PostgreSQL with version (e.g. PostgreSQL v16)
+  if (entity?.toLowerCase() === 'postgresql' || entity?.toLowerCase() === 'postgres') {
+    const verWord = spokenVer.digitByDigit;
+    const candA = `Postgres cue ell version ${verWord}`;
+    const candB = `Postgres Q L version ${verWord}`;
+    const candC = `PostgreSQL version ${verWord}`;
+    return {
+      replacement: candA,
+      reason: 'Structured technical phrase with spoken version number. Natural-language candidate hypotheses generated for comparative Rime testing.',
+      confidence: 'HIGH',
+      action: 'USE_CONTROLLED',
+      rank: 1,
+      candidates: [
+        {
+          text: candA,
+          reason: 'Natural spoken words ("cue ell") designed to guide TTS pronunciation without hyphen chains.',
+          rank: 1,
+        },
+        {
+          text: candB,
+          reason: 'Spoken abbreviation with uppercase letters.',
+          rank: 2,
+        },
+        {
+          text: candC,
+          reason: 'Preserves raw entity name while expanding version indicator.',
+          rank: 3,
+        },
+      ],
+    };
+  }
+
+  // 2. Node.js with version (e.g. Node.js 22)
+  if (entity?.toLowerCase() === 'node.js') {
+    const candA = `Node dot js ${spokenVer.digitByDigit}`;
+    const candB = `Node dot js ${versionDigits}`;
+    const candC = raw;
+    return {
+      replacement: candA,
+      reason: "Disambiguated domain extension 'dot js' for clear spoken delivery while preserving version number.",
+      confidence: 'HIGH',
+      action: 'USE_CONTROLLED',
+      rank: 1,
+      candidates: [
+        {
+          text: candA,
+          reason: 'Articulated dot js with spelled-out version number.',
+          rank: 1,
+        },
+        {
+          text: candB,
+          reason: 'Preserves version digits with disambiguated entity.',
+          rank: 2,
+        },
+        {
+          text: candC,
+          reason: 'Raw baseline candidate.',
+          rank: 3,
+        },
+      ],
+    };
+  }
+
+  // 3. General ENTITY + VERSION with 'v' prefix (e.g. Kubernetes v1.34, Ubuntu v24.04, Linux v6.8)
+  if (entity && hasVPrefix) {
+    const candA = `${entity} version ${spokenVer.digitByDigit}`;
+    const candidates: RiskCandidate[] = [
+      {
+        text: candA,
+        reason: 'Natural spoken candidate with digit-by-digit version articulation.',
+        rank: 1,
+      },
+    ];
+    if (spokenVer.grouped !== spokenVer.digitByDigit) {
+      candidates.push({
+        text: `${entity} version ${spokenVer.grouped}`,
+        reason: 'Natural spoken candidate with grouped version articulation.',
+        rank: 2,
+      });
+    }
+    candidates.push({
+      text: raw,
+      reason: 'Raw baseline candidate.',
+      rank: candidates.length + 1,
+    });
+
+    return {
+      replacement: candA,
+      reason: `Structured technical entity with version ("${raw}"). Generated natural spoken candidates with preserved entity and version.`,
+      confidence: 'HIGH',
+      action: 'USE_CONTROLLED',
+      rank: 1,
+      candidates: candidates.slice(0, 3),
+    };
+  }
+
+  // 4. General ENTITY + VERSION without 'v' prefix (e.g. Python 3.12, CUDA 12.6, Ubuntu 24.04, React 19, GPT-5.6)
+  if (entity && !hasVPrefix) {
+    const isHyphen = separator === '-';
+    let entitySpoken = entity;
+    if (isHyphen && entity.toUpperCase() === 'GPT') {
+      entitySpoken = 'G P T';
+    }
+    const candA = `${entitySpoken} ${spokenVer.digitByDigit}`;
+    const candidates: RiskCandidate[] = [
+      {
+        text: candA,
+        reason: 'Natural spoken candidate with digit-by-digit version articulation.',
+        rank: 1,
+      },
+    ];
+    if (spokenVer.grouped !== spokenVer.digitByDigit) {
+      candidates.push({
+        text: `${entitySpoken} ${spokenVer.grouped}`,
+        reason: 'Natural spoken candidate with grouped version articulation.',
+        rank: 2,
+      });
+    }
+    if (isHyphen) {
+      candidates.push({
+        text: `${entity} ${spokenVer.digitByDigit}`,
+        reason: 'Alternative candidate without acronym expansion.',
+        rank: candidates.length + 1,
+      });
+    } else {
+      candidates.push({
+        text: raw,
+        reason: 'Raw baseline candidate.',
+        rank: candidates.length + 1,
+      });
+    }
+
+    return {
+      replacement: candA,
+      reason: `Structured technical entity with version ("${raw}"). Generated natural spoken candidates without merging entity and version.`,
+      confidence: 'HIGH',
+      action: 'USE_CONTROLLED',
+      rank: 1,
+      candidates: candidates.slice(0, 3),
+    };
+  }
+
+  // 5. Standalone VERSION with 'v' prefix (e.g. v1.34, v1.34.7, v16)
+  if (!entity && hasVPrefix) {
+    const candA = `version ${spokenVer.digitByDigit}`;
+    const candidates: RiskCandidate[] = [
+      {
+        text: candA,
+        reason: 'Expanded version indicator with digit-by-digit spoken delivery.',
+        rank: 1,
+      },
+    ];
+    if (spokenVer.grouped !== spokenVer.digitByDigit) {
+      candidates.push({
+        text: `version ${spokenVer.grouped}`,
+        reason: 'Expanded version indicator with grouped spoken delivery.',
+        rank: 2,
+      });
+    }
+    candidates.push({
+      text: raw,
+      reason: 'Raw baseline candidate.',
+      rank: candidates.length + 1,
+    });
+
+    return {
+      replacement: candA,
+      reason: `Version number ("${raw}"). Generated natural spoken candidates with spelled-out digits.`,
+      confidence: 'HIGH',
+      action: 'USE_CONTROLLED',
+      rank: 1,
+      candidates: candidates.slice(0, 3),
+    };
+  }
+
+  return null;
 }
 
 export function transformRiskDeterministically(risk: SpeechRisk): DeterministicResult | null {
@@ -141,10 +338,20 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
     }
   }
 
-  // 4. Domain Terms & Structured Technical Expressions: DETECT != CORRECT
+  // 4. Version (Standalone or ENTITY + VERSION)
+  if (risk.category === 'version') {
+    const verResult = transformVersionDeterministically(raw);
+    if (verResult) return verResult;
+  }
+
+  // 5. Domain Terms & Structured Technical Expressions: DETECT != CORRECT
   // Treat TERM + VERSION, TERM + NUMBER, and domain vocabulary as compositional structures.
   // Never blindly phoneticize domain terms (e.g. never Kubernetes -> koo-ber-net-eez).
   if (risk.category === 'domain_term') {
+    // If domain term contains an embedded version, route through version transformer
+    const verResult = transformVersionDeterministically(raw);
+    if (verResult) return verResult;
+
     const termLower = raw.toLowerCase().trim();
 
     // Kubernetes: Native Rime pronunciation is preferred over artificial phoneticization
@@ -165,39 +372,7 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
       };
     }
 
-    // PostgreSQL v16 / PostgreSQL: Compositional phrase (TERM + VERSION)
-    const pgVersionMatch = /^postgresql\s+v?(\d+(?:\.\d+)*)$/i.exec(raw);
-    if (pgVersionMatch) {
-      const verDigits = pgVersionMatch[1];
-      const verWords = verDigits === '16' ? 'sixteen' : isNaN(Number(verDigits)) ? verDigits : integerToWords(parseInt(verDigits, 10));
-      const candA = `Postgres cue ell version ${verWords}`;
-      const candB = `Postgres Q L version ${verWords}`;
-      const candC = `PostgreSQL version ${verWords}`;
-      return {
-        replacement: candA,
-        reason: 'Structured technical phrase with spoken version number. Natural-language candidate hypotheses generated for comparative Rime testing.',
-        confidence: 'HIGH',
-        action: 'USE_CONTROLLED',
-        rank: 1,
-        candidates: [
-          {
-            text: candA,
-            reason: 'Natural spoken words ("cue ell") designed to guide TTS pronunciation without hyphen chains.',
-            rank: 1,
-          },
-          {
-            text: candB,
-            reason: 'Spoken abbreviation with uppercase letters.',
-            rank: 2,
-          },
-          {
-            text: candC,
-            reason: 'Preserves raw entity name while expanding version indicator.',
-            rank: 3,
-          },
-        ],
-      };
-    }
+    // Standalone PostgreSQL
     if (termLower === 'postgresql') {
       const candA = 'Postgres cue ell';
       const candB = 'Postgres Q L';
@@ -223,24 +398,6 @@ export function transformRiskDeterministically(risk: SpeechRisk): DeterministicR
             text: candC,
             reason: 'Original written representation tested as baseline candidate.',
             rank: 3,
-          },
-        ],
-      };
-    }
-
-    // Python 3.12: Structured term + version; native Rime decimal realization is natural
-    if (/^python\s+\d+(\.\d+)+$/i.test(raw)) {
-      return {
-        replacement: raw,
-        reason: 'Standard technical term and decimal version; native Rime synthesis handles pronunciation naturally.',
-        confidence: 'HIGH',
-        action: 'KEEP_RAW',
-        rank: 1,
-        candidates: [
-          {
-            text: raw,
-            reason: 'Native Rime synthesis handles Python decimal version naturally.',
-            rank: 1,
           },
         ],
       };

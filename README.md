@@ -307,7 +307,7 @@ Executes `tsc -b && vite build`. Compiles clean production assets into `dist/`.
 ```bash
 npm test
 ```
-Executes `vitest run`. Runs all 64 unit, golden, and integration tests.
+Executes `vitest run`. Runs all 78 unit, golden, version, and integration tests.
 
 ---
 
@@ -394,9 +394,9 @@ npx vitest run
 ```
 
 ```text
-Test Files  9 passed (9)
-     Tests  64 passed (64)
-  Duration  2.41s
+Test Files  10 passed (10)
+     Tests  78 passed (78)
+  Duration  2.30s
 
 ✓ tests/auth-middleware.test.ts (4 tests)
 ✓ tests/pronunciation-knowledge.test.ts (6 tests)
@@ -406,6 +406,7 @@ Test Files  9 passed (9)
 ✓ tests/validators.test.ts (10 tests)
 ✓ tests/latency-optimization.test.ts (5 tests)
 ✓ tests/golden-cases.test.ts (10 tests)
+✓ tests/version-handling.test.ts (14 tests)
 ✓ tests/api-routes.test.ts (6 tests)
 ```
 

@@ -1,4 +1,5 @@
 import { SpeechRisk, Transformation } from './schemas';
+import { recoverVersionFromText } from './number-words';
 
 export interface ValidationResult {
   isValid: boolean;
@@ -148,12 +149,20 @@ export function validateControlledText(
     }
 
     // Checklist #6: Entity Name Preservation
-    if (risk.category === 'domain_term' || risk.category === 'brand' || risk.category === 'name') {
-      const termBase = risk.text.split(/[\s/]/)[0];
+    if (risk.category === 'domain_term' || risk.category === 'brand' || risk.category === 'name' || risk.category === 'version') {
+      const termBase = risk.text.split(/[\s/-]/)[0];
       const lowerBase = termBase.toLowerCase();
+
+      // Ensure entity was not improperly merged with version (e.g. postgresv16, kubernetesv1.34, postgresv 16)
+      if (/\b[a-z]{3,}v\s*\d+/i.test(controlledText)) {
+        reviewRequired = true;
+        checklist.entityPreservation = false;
+        reasons.push('Entity name and version were improperly concatenated without clear separation.');
+      }
 
       const isEntityPreserved =
         lowerControlled.includes(lowerBase) ||
+        lowerControlled.includes('kubernetes') ||
         lowerControlled.includes('i p v') ||
         lowerControlled.includes('g r p c') ||
         lowerControlled.includes('gee are pee see') ||
@@ -170,31 +179,24 @@ export function validateControlledText(
         lowerControlled.includes('jot') ||
         lowerControlled.includes('cuda') ||
         lowerControlled.includes('ubuntu') ||
-        (lowerBase.includes('node') && lowerControlled.includes('node'));
+        lowerControlled.includes('python') ||
+        lowerControlled.includes('react') ||
+        (lowerBase.includes('node') && lowerControlled.includes('node')) ||
+        (lowerBase.includes('gpt') && lowerControlled.includes('g p t'));
 
-      if (!isEntityPreserved) {
+      // If standalone version without entity (e.g. "v1.34"), entity preservation does not apply
+      const isStandaloneVersion = risk.category === 'version' && !risk.text.includes(' ') && !risk.text.includes('-');
+      if (!isStandaloneVersion && !isEntityPreserved) {
         reviewRequired = true;
         checklist.entityPreservation = false;
         reasons.push(`Technical entity "${termBase}" was not preserved in candidate representation.`);
       }
 
       // Checklist #7: Version Number Preservation
-      const versionMatch = risk.text.match(/(?:v|\b)(\d+(?:\.\d+)*)\b/);
+      const versionMatch = risk.text.match(/(?:v|V|\b)(\d+(?:\.\d+)*)\b/);
       if (versionMatch) {
         const verNum = versionMatch[1];
-        const digitWordMap: Record<string, string> = {
-          '0': 'zero', '1': 'one', '2': 'two', '3': 'three', '4': 'four',
-          '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine',
-          '16': 'sixteen', '22': 'twenty-two', '19': 'nineteen',
-          '12.6': 'twelve point six', '24.04': 'twenty-four point zero four',
-        };
-        const spelledWord = digitWordMap[verNum];
-        const hasVersion =
-          controlledText.includes(verNum) ||
-          (spelledWord !== undefined && lowerControlled.includes(spelledWord)) ||
-          (verNum === '16' && lowerControlled.includes('sixteen')) ||
-          (verNum === '12.6' && lowerControlled.includes('twelve point six')) ||
-          (verNum === '24.04' && lowerControlled.includes('twenty-four point zero four'));
+        const hasVersion = recoverVersionFromText(controlledText, verNum);
 
         if (!hasVersion) {
           reviewRequired = true;

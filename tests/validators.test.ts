@@ -104,8 +104,8 @@ describe('Validation and Controlled Text Engine', () => {
     const risks = analyzeSpeechRisks(original);
     const result = await generateControlledText(original, risks);
 
-    // Python 3.12 retained intact
-    expect(result.controlledText).toContain('Python 3.12');
+    // Python 3.12 converted to natural spoken delivery with words for digits
+    expect(result.controlledText).toContain('Python three point');
     // Node.js 22 natural spoken conversion to twenty-two
     expect(result.controlledText).toContain('Node dot js twenty-two');
     expect(result.decision.status).toBe('USE_CONTROLLED');

@@ -15,7 +15,8 @@ export function detectIdentifiers(text: string): SpeechRisk[] {
     // Skip if it looks like an ordinary measurement like 100m, 50kg, 24h, or well-known protocol terms like IPv6
     if (
       /^\d+(?:m|cm|mm|km|kg|g|mg|h|min|s|px|rem|em|hz|khz|mhz|ghz|gb|mb|kb|tb)$/i.test(matchedText) ||
-      /^(?:ipv[46]|http[1-3])$/i.test(matchedText)
+      /^(?:ipv[46]|http[1-3])$/i.test(matchedText) ||
+      /^\.\d+/.test(text.slice(match.index + matchedText.length))
     ) {
       continue;
     }
