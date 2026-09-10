@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCandidatesForRisks } from '../lib/candidate-generator';
-import { analyzeSpeechRisks } from '../lib/risk-detector';
+import { generateCandidatesForRisks } from '../src/lib/candidate-generator';
+import { analyzeSpeechRisks } from '../src/lib/risk-detector';
 
 describe('Candidate Generator Engine', () => {
   it('generates between 1 and 3 natural-language candidates for PostgreSQL with metadata', () => {

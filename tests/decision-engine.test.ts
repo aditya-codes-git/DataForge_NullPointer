@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateSpeechDecision } from '../lib/decision-engine';
-import { recordEvidence, recordHumanVerification, getEvidenceById, getVerifiedPreference } from '../lib/evidence-memory';
-import { validateControlledText } from '../lib/validators';
+import { evaluateSpeechDecision } from '../src/lib/decision-engine';
+import { recordEvidence, recordHumanVerification, getEvidenceById, getVerifiedPreference } from '../src/lib/evidence-memory';
+import { validateControlledText } from '../src/lib/validators';
 
 describe('Decision Engine and Evidence Memory', () => {
   it('prioritizes safety warnings above all else in decision hierarchy', () => {
@@ -103,6 +103,8 @@ describe('Decision Engine and Evidence Memory', () => {
     recordEvidence({
       term: 'PostgreSQL',
       originalText: 'PostgreSQL',
+      riskCategory: 'domain_term',
+      benchmarkVersion: 'v1.0',
       candidate: 'Postgres cue ell',
       candidateRepresentation: 'Postgres cue ell',
       rimeConfig: { model: 'mistv3', voice: 'astra', language: 'en', format: 'audio/mpeg' },

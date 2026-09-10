@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { lookupPronunciationKnowledge, getAllKnowledgeTerms } from '../lib/pronunciation-knowledge';
+import { lookupPronunciationKnowledge, getAllKnowledgeTerms } from '../src/lib/pronunciation-knowledge';
 
 describe('Pronunciation Knowledge Layer — Three-Way Representation Model', () => {
   it('explicitly separates canonical human pronunciation from TTS spoken representation for Kubernetes', () => {

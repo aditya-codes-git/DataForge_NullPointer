@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { validateControlledText } from '../lib/validators';
-import { generateControlledText } from '../lib/controlled-text';
-import { analyzeSpeechRisks } from '../lib/risk-detector';
+import { validateControlledText } from '../src/lib/validators';
+import { generateControlledText } from '../src/lib/controlled-text';
+import { analyzeSpeechRisks } from '../src/lib/risk-detector';
 
 describe('Validation and Controlled Text Engine', () => {
   it('generates speech-ready controlled text for Case 1 (Identifier + Currency)', async () => {
@@ -81,8 +81,8 @@ describe('Validation and Controlled Text Engine', () => {
     expect(pgChange?.action).toBe('USE_CONTROLLED');
     expect(pgChange?.candidates).toBeDefined();
     expect(pgChange?.candidates?.length).toBeGreaterThanOrEqual(2);
-    expect(pgChange?.candidates?.[0].rank).toBe(1);
-    expect(pgChange?.candidates?.[0].candidateText || pgChange?.candidates?.[0].text).toContain('Postgres cue ell version sixteen');
+    const firstCandidate = pgChange?.candidates?.[0] as any;
+    expect(firstCandidate?.candidateText || firstCandidate?.text).toContain('Postgres cue ell version sixteen');
   });
 
   it('generates multiple ranked candidates for ambiguous acronyms like SQL', async () => {

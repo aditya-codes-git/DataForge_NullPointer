@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeSpeechRisks, detectSensitiveCredentials } from '../lib/risk-detector';
-import { generateControlledText } from '../lib/controlled-text';
-import { lookupPronunciationKnowledge } from '../lib/pronunciation-knowledge';
+import { analyzeSpeechRisks, detectSensitiveCredentials } from '../src/lib/risk-detector';
+import { generateControlledText } from '../src/lib/controlled-text';
+import { lookupPronunciationKnowledge } from '../src/lib/pronunciation-knowledge';
 
 describe('SaySure Production Golden Test Cases', () => {
   // Case 1: Kubernetes

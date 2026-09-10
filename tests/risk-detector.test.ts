@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeSpeechRisks } from '../lib/risk-detector';
-import { detectIdentifiers } from '../lib/risk-rules/identifiers';
-import { detectCurrency } from '../lib/risk-rules/currency';
-import { detectNumbers } from '../lib/risk-rules/numbers';
-import { detectAcronyms } from '../lib/risk-rules/acronyms';
-import { detectDomainTerms } from '../lib/risk-rules/domain-terms';
-import { detectAmbiguousTerms } from '../lib/risk-rules/ambiguous';
+import { analyzeSpeechRisks } from '../src/lib/risk-detector';
+import { detectIdentifiers } from '../src/lib/risk-rules/identifiers';
+import { detectCurrency } from '../src/lib/risk-rules/currency';
+import { detectNumbers } from '../src/lib/risk-rules/numbers';
+import { detectAcronyms } from '../src/lib/risk-rules/acronyms';
+import { detectDomainTerms } from '../src/lib/risk-rules/domain-terms';
+import { detectAmbiguousTerms } from '../src/lib/risk-rules/ambiguous';
 
 describe('Speech Risk Detection Engine', () => {
   describe('Identifiers Detector', () => {
