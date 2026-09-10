@@ -7,13 +7,13 @@ Rime AI Track
 Pronunciation + Controlled Delivery
 
 ## Live Demo
-[ADD LIVE DEMO URL]
+_Coming soon_
 
 ## Source Repository
-[ADD GITHUB REPOSITORY URL]
+https://github.com/aditya-codes-git/DataForge_NullPointer
 
 ## Demo Video
-[ADD DEMO VIDEO URL]
+https://drive.google.com/file/d/1eQqmskO-FfaVXbiE5vMLRtUZ3jP4H-FO/view?usp=sharing
 
 ## Quick Description
 

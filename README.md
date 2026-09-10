@@ -12,9 +12,9 @@ Built for the **Rime Hackathon** targeting the hard voice challenge: **Pronuncia
 
 | | |
 |---|---|
-| **Live Demo** | [ADD LIVE DEMO URL] |
-| **Source Code** | [ADD GITHUB REPOSITORY URL] |
-| **Demo Video** | [ADD DEMO VIDEO URL] |
+| **Live Demo** | _Coming soon_ |
+| **Source Code** | [github.com/aditya-codes-git/DataForge_NullPointer](https://github.com/aditya-codes-git/DataForge_NullPointer) |
+| **Demo Video** | [Watch on Google Drive](https://drive.google.com/file/d/1eQqmskO-FfaVXbiE5vMLRtUZ3jP4H-FO/view?usp=sharing) |
 
 ---
 

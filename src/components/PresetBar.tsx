@@ -47,6 +47,13 @@ export const PRESET_CASES: PresetCase[] = [
     badge: 'Complex Domain',
     badgeColor: 'amber',
   },
+  {
+    id: 'case-6',
+    name: 'Case 6: Versions (Kubernetes, Ubuntu, CUDA)',
+    text: "We're running Kubernetes v1.34, PostgreSQL v16, Python 3.12, Node.js 22, CUDA 12.6, and Ubuntu 24.04.",
+    badge: 'Version Mix',
+    badgeColor: 'indigo',
+  },
 ];
 
 interface PresetBarProps {

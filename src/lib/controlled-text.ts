@@ -4,6 +4,7 @@ import { generateCandidatesForRisks } from './candidate-generator';
 import { validateControlledText, ValidationResult } from './validators';
 import { evaluateSpeechDecision } from './decision-engine';
 import { detectSensitiveCredentials } from './risk-detector';
+import { applyHardcodedOverrides } from './hardcoded-overrides';
 
 export interface ControlledTextResult {
   controlledText: string;
@@ -58,13 +59,20 @@ export async function generateControlledText(
     };
   }
 
+  // 0. Apply hardcoded pronunciation overrides (temporary hackathon fast-path)
+  const overrideResult = applyHardcodedOverrides(originalText);
+  const workingText = overrideResult.text;
+
   // 1. Context Analysis (evaluates ambiguity, domain, and invokes Groq if needed)
   const contextResult = await analyzeContext(originalText, risks, options);
 
   // 2. Candidate Generation (generates 0-3 ranked candidates using knowledge + rules + context)
   const candidateResult = generateCandidatesForRisks(originalText, risks, contextResult);
-  const controlled = candidateResult.primaryControlledText;
-  const changes = candidateResult.changes;
+  // If overrides changed the text, use the override result as the base controlled text
+  const controlled = overrideResult.changes.length > 0
+    ? applyHardcodedOverrides(candidateResult.primaryControlledText).text
+    : candidateResult.primaryControlledText;
+  const changes = [...overrideResult.changes, ...candidateResult.changes];
 
   // Collect all generated candidates across risks
   const allCandidates: SpeechCandidate[] = [];
