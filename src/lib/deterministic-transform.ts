@@ -171,20 +171,24 @@ export function transformVersionDeterministically(raw: string): DeterministicRes
     };
   }
 
-  // 5. Standalone VERSION with 'v' prefix (e.g. v1.34, v1.34.7, v16)
-  if (!entity && hasVPrefix) {
-    const candA = `version ${spokenVer.digitByDigit}`;
+  // 5. Standalone VERSION with or without 'v' prefix (e.g. v1.34, v1.34.7, v16, 1.34, 3.12, 12.6, 24.04)
+  if (!entity) {
+    const candA = hasVPrefix ? `version ${spokenVer.digitByDigit}` : spokenVer.digitByDigit;
     const candidates: RiskCandidate[] = [
       {
         text: candA,
-        reason: 'Expanded version indicator with digit-by-digit spoken delivery.',
+        reason: hasVPrefix
+          ? 'Expanded version indicator with digit-by-digit spoken delivery.'
+          : 'Natural spoken version articulation with digit-by-digit spoken delivery.',
         rank: 1,
       },
     ];
     if (spokenVer.grouped !== spokenVer.digitByDigit) {
       candidates.push({
-        text: `version ${spokenVer.grouped}`,
-        reason: 'Expanded version indicator with grouped spoken delivery.',
+        text: hasVPrefix ? `version ${spokenVer.grouped}` : spokenVer.grouped,
+        reason: hasVPrefix
+          ? 'Expanded version indicator with grouped spoken delivery.'
+          : 'Natural spoken version articulation with grouped spoken delivery.',
         rank: 2,
       });
     }

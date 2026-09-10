@@ -29,7 +29,7 @@ const EXCLUDED_PRECEDING_WORDS = new Set([
 ]);
 
 // Measurement unit suffixes that indicate numeric measurements, NOT versions
-const UNIT_SUFFIX_REGEX = /^(?:kg|g|mg|m|cm|mm|km|s|ms|h|min|hz|khz|mhz|ghz|gb|mb|kb|tb|px|rem|em|%|percent|degrees?|c|f|k|v|w|a|ma|l|ml)\b/i;
+const UNIT_SUFFIX_REGEX = /^(?:%|percent\b|(?:kg|g|mg|m|cm|mm|km|s|ms|h|min|hz|khz|mhz|ghz|gb|mb|kb|tb|px|rem|em|degrees?|c|f|k|v|w|a|ma|l|ml)\b)/i;
 
 export interface VersionInfo {
   fullMatch: string;
@@ -64,6 +64,19 @@ export function parseVersionInfo(text: string): VersionInfo | null {
       separator: '',
       hasVPrefix: true,
       versionDigits: standaloneMatch[2],
+      start: 0,
+      end: text.length,
+    };
+  }
+
+  // Pattern 3: Standalone decimal or multi-segment version without 'v' (e.g. "1.34", "3.12", "12.6", "24.04", "1.34.7")
+  const standaloneDecimalMatch = /^(\d+\.\d+(?:\.\d+)*)$/.exec(text);
+  if (standaloneDecimalMatch) {
+    return {
+      fullMatch: text,
+      separator: '',
+      hasVPrefix: false,
+      versionDigits: standaloneDecimalMatch[1],
       start: 0,
       end: text.length,
     };
@@ -164,6 +177,48 @@ export function detectVersions(text: string): SpeechRisk[] {
       fullMatch,
       separator: '',
       hasVPrefix: true,
+      versionDigits,
+      start: matchStart,
+      end: matchEnd,
+    });
+  }
+
+  // Pattern 3: Standalone decimal or multi-segment version number without 'v' prefix:
+  // e.g. "1.34", "3.12", "12.6", "24.04", "1.34.7"
+  const standaloneDecimalRegex = /(?:^|(?<=[^\w.]))(\d+\.\d+(?:\.\d+)*)(?=[^\w.]|$)/g;
+  while ((match = standaloneDecimalRegex.exec(text)) !== null) {
+    const fullMatch = match[1];
+    const versionDigits = fullMatch;
+    const matchStart = match.index;
+    const matchEnd = matchStart + fullMatch.length;
+
+    // Reject if already covered by an ENTITY + VERSION or v-prefixed detection
+    const alreadyCovered = matches.some((d) => matchStart >= d.start && matchEnd <= d.end);
+    if (alreadyCovered) {
+      continue;
+    }
+
+    // Exclude currency symbols preceding the number: e.g. ₹12.50, $12.50, €12.50, £12.50
+    const beforeSlice = text.slice(Math.max(0, matchStart - 4), matchStart).trim();
+    if (/[₹$€£]|(?:rs\.?|inr|usd|eur|gbp)\s*$/i.test(beforeSlice)) {
+      continue;
+    }
+
+    // Exclude if followed by measurement unit or percent: e.g. "12.50 kg", "12.5%"
+    const afterMatch = text.slice(matchEnd).trimStart();
+    if (UNIT_SUFFIX_REGEX.test(afterMatch)) {
+      continue;
+    }
+
+    // Exclude if part of a date: e.g. "12.05.2026"
+    if (text.slice(matchEnd).startsWith('.') && /\.\d{4}\b/.test(text.slice(matchEnd))) {
+      continue;
+    }
+
+    matches.push({
+      fullMatch,
+      separator: '',
+      hasVPrefix: false,
       versionDigits,
       start: matchStart,
       end: matchEnd,

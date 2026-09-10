@@ -204,6 +204,45 @@ describe('SaySure Version-Number Pronunciation Handling Regression Suite', () =>
     expect(evalResult.summary).toContain('Original retained');
   });
 
+  it('converts all decimal version cases in a single complex sentence: Kubernetes v1.34, Python 3.12, CUDA 12.6, and Ubuntu 24.04', async () => {
+    const testSentence = 'We deployed Kubernetes v1.34 with Python 3.12 and CUDA 12.6 on Ubuntu 24.04.';
+    const risks = analyzeSpeechRisks(testSentence);
+
+    expect(risks.some((r) => r.text.includes('1.34'))).toBe(true);
+    expect(risks.some((r) => r.text.includes('3.12'))).toBe(true);
+    expect(risks.some((r) => r.text.includes('12.6'))).toBe(true);
+    expect(risks.some((r) => r.text.includes('24.04'))).toBe(true);
+
+    const result = await generateControlledText(testSentence, risks);
+
+    expect(result.controlledText).toContain('Kubernetes version one point three four');
+    expect(result.controlledText).toContain('Python three point');
+    expect(result.controlledText).toContain('CUDA twelve point six');
+    expect(result.controlledText).toContain('Ubuntu twenty-four point zero four');
+    expect(result.validation.checklistPassed.versionPreservation).toBe(true);
+    expect(result.validation.isValid).toBe(true);
+  });
+
+  it('handles standalone decimal and multi-segment versions without leading v (e.g. 1.34, 3.12, 12.6, 24.04, 1.34.7)', async () => {
+    const standaloneCases = [
+      { text: 'Upgraded system to 1.34 in production.', ver: '1.34', expected: 'one point three four' },
+      { text: 'Runtime 3.12 is recommended.', ver: '3.12', expected: 'three point' },
+      { text: 'Targeting build 12.6 today.', ver: '12.6', expected: 'twelve point six' },
+      { text: 'Server OS 24.04 installed.', ver: '24.04', expected: 'twenty-four point zero four' },
+      { text: 'Patch release 1.34.7 is out.', ver: '1.34.7', expected: 'one point three four point seven' },
+    ];
+
+    for (const sc of standaloneCases) {
+      const risks = analyzeSpeechRisks(sc.text);
+      const vRisk = risks.find((r) => r.category === 'version' && r.text.includes(sc.ver));
+      expect(vRisk).toBeDefined();
+
+      const result = await generateControlledText(sc.text, risks);
+      expect(result.controlledText).toContain(sc.expected);
+      expect(result.validation.checklistPassed.versionPreservation).toBe(true);
+    }
+  });
+
   it('end-to-end user bug sentence: converts Kubernetes v1.34 to spoken form without mangling rest of sentence', async () => {
     const sentence = 'deployed Kubernetes v1.34 in u s e a s t one, but the API returned';
     const risks = analyzeSpeechRisks(sentence);
