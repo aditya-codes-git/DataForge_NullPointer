@@ -23,7 +23,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
-    "tailwind-merge": "^2.5.4"
+    "tailwind-merge": "^2.5.4",
+    "typescript": "^5.6.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -37,7 +38,6 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3",
     "vite": "^5.4.11",
     "vitest": "^2.1.2"
   }
