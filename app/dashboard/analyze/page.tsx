@@ -1,29 +1,30 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Header } from './Header';
-import { TextInput, PRESET_CASES } from './TextInput';
-import { RiskHighlights } from './RiskHighlights';
-import { RiskList } from './RiskList';
-import { ControlledText } from './ControlledText';
-import { AudioComparison } from './AudioComparison';
-import { VerificationPanel } from './VerificationPanel';
-import { ConfigurationPanel } from './ConfigurationPanel';
-import { LoadingState } from './LoadingState';
-import { ErrorState } from './ErrorState';
+import { TextInput } from '@/components/TextInput';
+import { RiskHighlights } from '@/components/RiskHighlights';
+import { RiskList } from '@/components/RiskList';
+import { ControlledText } from '@/components/ControlledText';
+import { AudioComparison } from '@/components/AudioComparison';
+import { VerificationPanel } from '@/components/VerificationPanel';
+import { ConfigurationPanel } from '@/components/ConfigurationPanel';
+import { LoadingState } from '@/components/LoadingState';
+import { ErrorState } from '@/components/ErrorState';
 import { ComparisonResult, RimeConfigPublic } from '@/lib/schemas';
 import { saveAnalysisToHistory } from '@/lib/history-store';
+import { useSearchParams } from 'next/navigation';
 
-export function Dashboard() {
-  // Textarea starts completely empty on initial load/refresh
-  const [inputText, setInputText] = useState('');
+function AnalyzeContent() {
+  const searchParams = useSearchParams();
+  const initialPrompt = searchParams.get('text') || '';
+
+  const [inputText, setInputText] = useState(initialPrompt);
   const [isLoading, setIsLoading] = useState(false);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedRiskId, setSelectedRiskId] = useState<string | null>(null);
   const [rimeConfig, setRimeConfig] = useState<RimeConfigPublic | null>(null);
 
-  // Fetch initial public server config
   useEffect(() => {
     fetch('/api/config')
       .then((res) => res.json())
@@ -33,8 +34,9 @@ export function Dashboard() {
       .catch((err) => console.error('[Config Fetch Error]:', err));
   }, []);
 
-  const handleAnalyze = async () => {
-    if (!inputText.trim()) return;
+  const handleAnalyze = async (customText?: string) => {
+    const textToRun = (customText || inputText).trim();
+    if (!textToRun) return;
 
     setIsLoading(true);
     setError(null);
@@ -44,7 +46,7 @@ export function Dashboard() {
       const res = await fetch('/api/compare', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputText.trim() }),
+        body: JSON.stringify({ text: textToRun }),
       });
 
       const data = await res.json();
@@ -60,7 +62,7 @@ export function Dashboard() {
 
       // Persist real check to client history store
       saveAnalysisToHistory({
-        text: inputText.trim(),
+        text: textToRun,
         term: data.risks?.[0]?.text || 'general_term',
         category: data.risks?.[0]?.category || 'domain_term',
         decision: data.decision?.status || (data.reviewRequired ? 'NEEDS_REVIEW' : 'CONTROLLED_PREFERRED'),
@@ -76,24 +78,28 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      {/* Header */}
-      <Header rimeConfig={rimeConfig} />
+    <div className="space-y-8">
+      {/* Page Header */}
+      <div>
+        <h1 className="text-2xl font-bold font-sans tracking-tight text-neutral-950 uppercase">
+          Analyze
+        </h1>
+        <p className="text-xs text-neutral-500 font-sans mt-1">
+          Test speech risks, inspect acoustic transformations, and verify audio delivery with Rime TTS.
+        </p>
+      </div>
 
-      {/* Main Container */}
-      <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 space-y-10">
-        {/* Section 1: Analyze your text */}
+      <div className="space-y-10">
+        {/* Section 1: Analyze text input */}
         <TextInput
           text={inputText}
           onChange={setInputText}
-          onAnalyze={handleAnalyze}
+          onAnalyze={() => handleAnalyze()}
           isLoading={isLoading}
         />
 
         {/* Error notification */}
-        {error && (
-          <ErrorState message={error} onDismiss={() => setError(null)} />
-        )}
+        {error && <ErrorState message={error} onDismiss={() => setError(null)} />}
 
         {/* Loading Spinner */}
         {isLoading && <LoadingState />}
@@ -103,7 +109,7 @@ export function Dashboard() {
           <div className="space-y-10">
             {/* Safety Warning Banner if sensitive credential detected */}
             {comparison.safetyWarning && (
-              <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900 flex items-start gap-3">
+              <div className="rounded-none border border-rose-200 bg-rose-50 p-4 text-xs text-rose-900 flex items-start gap-3">
                 <span className="font-bold text-sm text-rose-600">⚠ Security Notice:</span>
                 <div>{comparison.safetyWarning}</div>
               </div>
@@ -112,7 +118,7 @@ export function Dashboard() {
             {/* Section 2: Speech risks detected */}
             <section className="space-y-4">
               <div className="flex items-center gap-2.5">
-                <h3 className="text-xl font-bold tracking-tight text-slate-900">
+                <h3 className="text-lg font-bold tracking-tight text-slate-900">
                   Speech risks detected
                 </h3>
                 <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
@@ -156,7 +162,15 @@ export function Dashboard() {
 
         {/* Section 6: Rime Configuration footer card */}
         <ConfigurationPanel config={rimeConfig} />
-      </main>
+      </div>
     </div>
+  );
+}
+
+export default function AnalyzePage() {
+  return (
+    <React.Suspense fallback={<div className="p-8 text-center text-xs font-mono text-neutral-400">Loading analyzer...</div>}>
+      <AnalyzeContent />
+    </React.Suspense>
   );
 }

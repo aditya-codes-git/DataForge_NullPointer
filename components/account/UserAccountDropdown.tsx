@@ -114,7 +114,7 @@ export function UserAccountDropdown() {
             {/* Menu Items */}
             <div className="py-1">
               <Link
-                href="/account"
+                href="/dashboard/account?tab=profile"
                 onClick={() => setIsOpen(false)}
                 role="menuitem"
                 className="flex items-center gap-2.5 px-4 py-2 text-xs text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 transition-colors"
@@ -124,7 +124,7 @@ export function UserAccountDropdown() {
               </Link>
 
               <Link
-                href="/account?tab=security"
+                href="/dashboard/account?tab=security"
                 onClick={() => setIsOpen(false)}
                 role="menuitem"
                 className="flex items-center gap-2.5 px-4 py-2 text-xs text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 transition-colors"
@@ -134,7 +134,7 @@ export function UserAccountDropdown() {
               </Link>
 
               <Link
-                href="/account?tab=preferences"
+                href="/dashboard/account?tab=preferences"
                 onClick={() => setIsOpen(false)}
                 role="menuitem"
                 className="flex items-center gap-2.5 px-4 py-2 text-xs text-neutral-700 hover:bg-neutral-50 hover:text-indigo-600 transition-colors"
