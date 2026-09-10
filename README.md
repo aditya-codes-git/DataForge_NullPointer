@@ -8,6 +8,16 @@ Built for the **Rime Hackathon** targeting the hard voice challenge: **Pronuncia
 
 ---
 
+## Submission Links
+
+| | |
+|---|---|
+| **Live Demo** | [ADD LIVE DEMO URL] |
+| **Source Code** | [ADD GITHUB REPOSITORY URL] |
+| **Demo Video** | [ADD DEMO VIDEO URL] |
+
+---
+
 ## 1. The Core Idea: DETECTION ≠ CORRECTION
 
 A fundamental insight behind SaySure is:
