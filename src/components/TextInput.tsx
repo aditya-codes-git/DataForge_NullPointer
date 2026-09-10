@@ -61,17 +61,7 @@ interface TextInputProps {
 
 export function TextInput({ text, onChange, onAnalyze, isLoading }: TextInputProps) {
   return (
-    <section className="space-y-4">
-      {/* Section Titles */}
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-          Analyze your text
-        </h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Check what your users will actually hear.
-        </p>
-      </div>
-
+    <section>
       {/* Main Input Card */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
         <textarea
