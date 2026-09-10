@@ -24,8 +24,21 @@ describe('Supabase Auth Middleware & Route Protection', () => {
     expect(response.status).toBe(200);
   });
 
-  it('allows public access to /auth/callback', async () => {
-    const request = new NextRequest('http://localhost:3000/auth/callback?code=test-code');
+  it('redirects unauthenticated user accessing /account to /login?callbackUrl=/account', async () => {
+    const request = new NextRequest('http://localhost:3000/account');
+    const response = await updateSession(request);
+
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      expect(response.status).toBe(307);
+      expect(response.headers.get('location')).toContain('/login');
+      expect(response.headers.get('location')).toContain('callbackUrl=%2Faccount');
+    } else {
+      expect(response.status).toBe(200);
+    }
+  });
+
+  it('allows public access to /forgot-password', async () => {
+    const request = new NextRequest('http://localhost:3000/forgot-password');
     const response = await updateSession(request);
     expect(response.status).toBe(200);
   });

@@ -39,8 +39,14 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  // Protect /dashboard and any private nested routes
-  if (!user && (path === '/dashboard' || path.startsWith('/dashboard/'))) {
+  // Protect /dashboard and /account (and nested routes)
+  const isProtected =
+    path === '/dashboard' ||
+    path.startsWith('/dashboard/') ||
+    path === '/account' ||
+    path.startsWith('/account/');
+
+  if (!user && isProtected) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = '/login';
     loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);

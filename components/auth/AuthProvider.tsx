@@ -13,6 +13,7 @@ interface AuthContextType {
   userEmail: string | null;
   userAvatar: string | null;
   signOut: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -23,6 +24,7 @@ const AuthContext = createContext<AuthContextType>({
   userEmail: null,
   userAvatar: null,
   signOut: async () => {},
+  refreshUser: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -62,6 +64,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
     };
   }, [supabase]);
+
+  const refreshUser = async () => {
+    try {
+      const {
+        data: { user: updatedUser },
+      } = await supabase.auth.getUser();
+      if (updatedUser) {
+        setUser(updatedUser);
+      }
+    } catch (err) {
+      console.error('[RefreshUser Error]:', err);
+    }
+  };
 
   const signOut = async () => {
     try {
@@ -108,6 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         userEmail,
         userAvatar,
         signOut,
+        refreshUser,
       }}
     >
       {children}
