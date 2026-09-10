@@ -9,7 +9,7 @@ import { FinalCTA } from '@/components/landing/FinalCTA';
 import { Footer } from '@/components/landing/Footer';
 
 export const metadata = {
-  title: 'SaySure — Voice Delivery & Pronunciation QA for Production TTS',
+  title: 'SaySure',
   description:
     'SaySure tests how pronunciation-sensitive text actually sounds through your TTS voice. Text can be correct and still sound wrong.',
 };

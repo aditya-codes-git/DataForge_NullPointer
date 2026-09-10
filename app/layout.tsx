@@ -3,8 +3,12 @@ import './globals.css';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 
 export const metadata: Metadata = {
-  title: 'SaySure — Voice Delivery & Pronunciation QA',
+  title: 'SaySure',
   description: 'A voice-quality developer tool that identifies speech risks, controls text delivery, and validates spoken output via Rime TTS.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({
