@@ -12,7 +12,7 @@ Built for the **Rime Hackathon** targeting the hard voice challenge: **Pronuncia
 
 | | |
 |---|---|
-| **Live Demo** | _Coming soon_ |
+| **Live Demo** | [dataforgenullpointer.vercel.app](https://dataforgenullpointer.vercel.app/) |
 | **Source Code** | [github.com/aditya-codes-git/DataForge_NullPointer](https://github.com/aditya-codes-git/DataForge_NullPointer) |
 | **Demo Video** | [Watch on Google Drive](https://drive.google.com/file/d/1eQqmskO-FfaVXbiE5vMLRtUZ3jP4H-FO/view?usp=sharing) |
 

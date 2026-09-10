@@ -7,7 +7,7 @@ Rime AI Track
 Pronunciation + Controlled Delivery
 
 ## Live Demo
-_Coming soon_
+https://dataforgenullpointer.vercel.app/
 
 ## Source Repository
 https://github.com/aditya-codes-git/DataForge_NullPointer
