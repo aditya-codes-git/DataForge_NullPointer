@@ -7,13 +7,13 @@ import { fadeUp, staggerContainer } from '@/lib/animations';
 
 const PROBLEM_CASES = [
   {
-    id: 'pg',
-    written: 'PostgreSQL v16',
-    category: 'Domain Term + Version',
-    naiveTTS: 'post-gree-ess-kew-ell vee sixteen',
-    listenerHears: 'Clumsy character-spelling of SQL with literal "vee"',
-    controlledCandidate: 'Postgres cue ell version sixteen',
-    note: 'Neural models often struggle with hybrid acronyms.',
+    id: 'code',
+    written: 'HTTP 429',
+    category: 'Protocol Status Code',
+    naiveTTS: 'H-T-T-P four hundred twenty-nine',
+    listenerHears: 'Ambiguous grouping as large count instead of individual digits',
+    controlledCandidate: 'HTTP four two nine',
+    note: 'Status codes require discrete digit pronunciation in conversational audio.',
   },
   {
     id: 'proto',

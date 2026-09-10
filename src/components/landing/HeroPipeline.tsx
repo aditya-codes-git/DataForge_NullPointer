@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { FileText, AlertTriangle, Sparkles, Cpu, Headphones, CheckCircle2 } from 'lucide-react';
 
 const TOKENS = [
-  { text: 'PostgreSQL v16', category: 'domain_term', candidate: 'Postgres cue ell version sixteen' },
-  { text: 'HTTP/2', category: 'protocol', candidate: 'HTTP two' },
+  { text: 'HTTP 429', category: 'status_code', candidate: 'HTTP four two nine' },
   { text: '₹2,75,500', category: 'currency', candidate: 'two lakh seventy-five thousand five hundred rupees' },
+  { text: 'A12B9X7', category: 'identifier', candidate: 'A one two B nine X seven' },
   { text: 'gRPC', category: 'protocol', candidate: 'gee are pee see' },
   { text: '17/09/2026', category: 'date', candidate: 'September seventeenth, twenty twenty-six' },
 ];

@@ -6,13 +6,13 @@ import { Play, Pause } from 'lucide-react';
 
 const RIBBON_ITEMS = [
   {
-    raw: 'PostgreSQL v16',
-    risk: 'Ambiguous Initialism & Version',
-    candidate: 'Postgres cue ell version sixteen',
+    raw: 'HTTP 429',
+    risk: 'Protocol Status Code',
+    candidate: 'HTTP four two nine',
     voice: 'mistv3 (astra)',
     decision: 'CONTROLLED PREFERRED',
     decisionType: 'controlled',
-    audioFile: '/audio/5_postgres_cue_ell_v16.mp3',
+    audioFile: '/audio/7_full_sentence_controlled.mp3',
   },
   {
     raw: 'HTTP/2',

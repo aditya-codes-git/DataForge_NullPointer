@@ -11,12 +11,12 @@ export function ComparisonDemo() {
 
   const cases = {
     case1: {
-      title: 'PostgreSQL v16',
-      context: 'The primary storage engine is PostgreSQL v16 on Linux.',
-      rawText: 'The primary storage engine is PostgreSQL v16 on Linux.',
-      controlledText: 'The primary storage engine is Postgres cue ell version sixteen on Linux.',
+      title: 'HTTP 429',
+      context: 'Rate limit exceeded: the API endpoint returned HTTP 429 to the client.',
+      rawText: 'Rate limit exceeded: the API endpoint returned HTTP 429 to the client.',
+      controlledText: 'Rate limit exceeded: the API endpoint returned HTTP four two nine to the client.',
       decision: 'Controlled candidate preferred',
-      reason: 'Rime synthesis produced clearer syllable separation and explicit version delivery.',
+      reason: 'Rime synthesis produced clearer digit-by-digit clarity and eliminated numeric ambiguity.',
       rawWaveform: [18, 45, 30, 75, 40, 60, 20, 80, 50, 30, 20, 15],
       controlledWaveform: [25, 60, 45, 85, 65, 90, 70, 95, 80, 55, 40, 25],
     },
@@ -72,7 +72,7 @@ export function ComparisonDemo() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Case 1: Controlled Wins (PostgreSQL v16)
+              Case 1: Controlled Wins (HTTP 429)
             </button>
             <button
               type="button"

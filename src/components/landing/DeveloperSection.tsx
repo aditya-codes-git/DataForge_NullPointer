@@ -1,7 +1,4 @@
-'use client';
-
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Copy, Check, ArrowRight } from 'lucide-react';
 
 const CODE_TEXT = `import { SaySure } from '@saysure/sdk';
@@ -9,14 +6,14 @@ const CODE_TEXT = `import { SaySure } from '@saysure/sdk';
 const saysure = new SaySure({ apiKey: process.env.SAYSURE_KEY });
 
 // 1. Investigate risks and generate competing candidates
-const analysis = await saysure.analyze({
-  text: "The primary cluster migrated to PostgreSQL v16.",
-  domain: "software",
+const result = await saysure.analyze({
+  text: "Your confirmation code is A12B9X7.",
+  domain: "support",
   locale: "en-US",
 });
 
 // 2. Synthesize through your configured Rime voice
-const speech = await saysure.compare(analysis, {
+const speech = await saysure.compare(result, {
   voice: "astra",
   model: "mistv3",
 });
@@ -24,7 +21,7 @@ const speech = await saysure.compare(analysis, {
 // 3. Obtain evidence-backed text for delivery
 if (speech.decision.status === 'USE_CONTROLLED') {
   console.log(speech.controlledText); 
-  // "The primary cluster migrated to Postgres cue ell version sixteen."
+  // "Your confirmation code is A one two B nine X seven."
 }`;
 
 export function DeveloperSection() {
@@ -89,7 +86,7 @@ export function DeveloperSection() {
             <button
               type="button"
               onClick={handleCopy}
-              className="inline-flex items-center gap-1.5 text-neutral-300 hover:text-white transition-colors"
+              className="inline-flex items-center gap-1.5 text-neutral-300 hover:text-white transition-colors cursor-pointer"
             >
               {copied ? (
                 <>

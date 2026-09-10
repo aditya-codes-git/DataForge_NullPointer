@@ -11,18 +11,18 @@ export function ProductDemo() {
 
   const candidates = [
     {
-      text: 'Postgres cue ell version sixteen',
-      reason: 'Natural spoken representation with spelled acronym suffix and word-based version.',
+      text: 'HTTP four two nine',
+      reason: 'Natural spoken representation with individual digit spelling for status codes.',
       preferred: true,
     },
     {
-      text: 'Postgres Q L version sixteen',
-      reason: 'Alternative initialism tokenization for modern neural TTS pronunciation dictionaries.',
+      text: 'HTTP four twenty-nine',
+      reason: 'Alternative conversational grouping for modern neural TTS pronunciation dictionaries.',
       preferred: false,
     },
     {
-      text: 'PostgreSQL version sixteen',
-      reason: 'Original entity spelling with verbalized version number.',
+      text: 'HTTP 429',
+      reason: 'Original entity spelling preserved as baseline.',
       preferred: false,
     },
   ];
@@ -85,11 +85,11 @@ export function ProductDemo() {
                   Input Sentence Under QA
                 </label>
                 <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 text-slate-800 text-base font-normal leading-relaxed">
-                  The primary cluster is migrating to{' '}
+                  Rate limit exceeded: the API endpoint returned{' '}
                   <span className="inline-block rounded-md bg-amber-100/90 border border-amber-300/80 px-2 py-0.5 font-medium text-amber-900 text-sm">
-                    PostgreSQL v16
+                    HTTP 429
                   </span>{' '}
-                  with strict replication rules.
+                  to the client.
                 </div>
               </div>
 
@@ -109,13 +109,13 @@ export function ProductDemo() {
 
                 <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-xs">
                   <div className="flex items-center justify-between mb-1">
-                    <strong className="text-slate-900 font-mono text-sm">PostgreSQL v16</strong>
+                    <strong className="text-slate-900 font-mono text-sm">HTTP 429</strong>
                     <span className="text-[10px] font-medium uppercase px-2 py-0.5 rounded bg-blue-100 text-blue-800">
-                      Domain Term + Version
+                      Protocol Status Code
                     </span>
                   </div>
                   <p className="text-slate-600 mt-1">
-                    Technical initialism with version suffix. Native neural models often trip over the letters "SQL" or pronounce "v16" as separate unlinked letters.
+                    Ambiguity between reading status code as number magnitude ("four hundred twenty-nine") vs conventional individual digits ("four two nine").
                   </p>
                 </div>
               </div>
@@ -178,7 +178,7 @@ export function ProductDemo() {
                     <span className="text-[11px] font-mono text-slate-400">1.2s</span>
                   </div>
                   <p className="text-xs font-mono text-slate-700 mb-3 truncate">
-                    "PostgreSQL v16"
+                    "HTTP 429"
                   </p>
 
                   {/* Waveform graphic */}

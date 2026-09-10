@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -44,6 +42,62 @@ export function DetectionStatement() {
           <p className="font-sans text-xl sm:text-2xl text-neutral-400 font-normal leading-relaxed">
             A speech risk tells us to investigate. It does not tell us to rewrite. The original text is always an active candidate — and it is always permitted to win.
           </p>
+        </motion.div>
+
+        {/* Visual Pipeline Demonstration Using HTTP 429 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="mt-14 max-w-4xl mx-auto border border-neutral-800 bg-neutral-900/60 p-6 sm:p-8 text-left font-mono"
+        >
+          <div className="flex items-center justify-between pb-3 border-b border-neutral-800 text-[10px] uppercase tracking-widest text-neutral-400">
+            <span>Case Study: Protocol Status Code</span>
+            <span className="text-indigo-400 font-bold">Investigation: HTTP 429</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 text-xs">
+            <div className="border border-neutral-800 p-4 bg-neutral-950">
+              <span className="text-[10px] text-neutral-500 uppercase tracking-wider block mb-1">
+                01 // RAW INPUT
+              </span>
+              <span className="text-white font-bold block text-sm">"HTTP 429"</span>
+              <p className="text-[11px] text-neutral-500 mt-2">
+                Evaluated directly as written without preemptive distortion
+              </p>
+            </div>
+
+            <div className="border border-neutral-800 p-4 bg-neutral-950">
+              <span className="text-[10px] text-indigo-400 uppercase tracking-wider block mb-1">
+                02 // CANDIDATE
+              </span>
+              <span className="text-indigo-300 font-bold block text-sm">"HTTP four two nine"</span>
+              <p className="text-[11px] text-neutral-500 mt-2">
+                Natural spoken representation tested side-by-side
+              </p>
+            </div>
+
+            <div className="border border-neutral-800 p-4 bg-neutral-950">
+              <span className="text-[10px] text-neutral-500 uppercase tracking-wider block mb-1">
+                03 // RIME DUAL TEST
+              </span>
+              <span className="text-white font-bold block text-sm">Mistv3 // Astra</span>
+              <p className="text-[11px] text-neutral-500 mt-2">
+                Identical audio codec, voice, and sampling parameters
+              </p>
+            </div>
+
+            <div className="border border-emerald-900/60 p-4 bg-emerald-950/30">
+              <span className="text-[10px] text-emerald-400 uppercase tracking-wider block mb-1">
+                04 // DECISION
+              </span>
+              <span className="text-emerald-400 font-bold block text-sm">CONTROLLED WINS</span>
+              <p className="text-[11px] text-neutral-400 mt-2">
+                Proven to eliminate numeric slurring in production audio
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* The 4 Legitimate States */}

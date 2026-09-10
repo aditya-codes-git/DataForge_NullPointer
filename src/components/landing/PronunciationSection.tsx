@@ -11,22 +11,22 @@ export function PronunciationSection() {
   const representations = [
     {
       label: 'Candidate 1',
-      text: 'Postgres cue ell version sixteen',
-      type: 'Natural Spoken Words',
+      text: 'A one two B nine X seven',
+      type: 'Phonetic Character Isolation',
       status: 'High Clarity in Rime',
       bars: [30, 60, 45, 80, 70, 95, 85, 60, 40, 25],
     },
     {
       label: 'Candidate 2',
-      text: 'Postgres Q L version sixteen',
-      type: 'Initialism Tokenized',
+      text: 'A-1-2-B-9-X-7',
+      type: 'Hyphenated Tokenized Sequence',
       status: 'Tested in mistv3',
       bars: [25, 50, 40, 75, 65, 85, 75, 55, 35, 20],
     },
     {
       label: 'Candidate 3',
-      text: 'PostgreSQL version sixteen',
-      type: 'Original Name + Spoken Num',
+      text: 'A12B9X7',
+      type: 'Raw Alphanumeric Baseline',
       status: 'Evaluated Baseline',
       bars: [20, 40, 30, 65, 50, 70, 60, 45, 25, 15],
     },
@@ -55,7 +55,7 @@ export function PronunciationSection() {
               01 — Original Written Form
             </span>
             <div className="mt-4 text-2xl font-bold font-mono text-slate-900">
-              PostgreSQL v16
+              A12B9X7
             </div>
             <p className="mt-3 text-xs text-slate-500 leading-relaxed">
               The exact raw string supplied by user, API caller, or LLM output. Preserved for evaluation.
@@ -68,7 +68,7 @@ export function PronunciationSection() {
               02 — Canonical Spoken Form
             </span>
             <div className="mt-4 text-xl font-bold text-slate-900 font-sans">
-              "Postgres cue ell, version sixteen"
+              "A one two B nine X seven"
             </div>
             <p className="mt-3 text-xs text-slate-500 leading-relaxed">
               Human-readable linguistic description of conventional speech. Not automatically the best TTS input.

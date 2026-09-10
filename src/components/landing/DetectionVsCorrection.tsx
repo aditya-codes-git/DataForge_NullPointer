@@ -21,7 +21,7 @@ export function DetectionVsCorrection() {
       desc: 'The candidate representation resolves an acoustic ambiguity, initialism, or awkward phrasing.',
       color: 'border-indigo-200 bg-indigo-50/40 text-indigo-950',
       tagColor: 'bg-indigo-100 text-indigo-800',
-      example: 'PostgreSQL v16 -> "Postgres cue ell version sixteen"',
+      example: 'HTTP 429 -> "HTTP four two nine"',
     },
     {
       title: 'Same',

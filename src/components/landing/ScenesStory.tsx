@@ -1,7 +1,4 @@
-'use client';
-
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Play, Pause } from 'lucide-react';
 
 export function ScenesStory() {
@@ -9,13 +6,13 @@ export function ScenesStory() {
   const [playingTrack, setPlayingTrack] = useState<'raw' | 'controlled' | null>(null);
 
   const candidates = [
-    { text: 'Postgres cue ell', desc: 'Natural spoken words' },
-    { text: 'Postgres Q L', desc: 'Acronym tokenized' },
-    { text: 'PostgreSQL', desc: 'Original baseline' },
+    { text: 'HTTP four two nine', desc: 'Standard digit-by-digit status code' },
+    { text: 'HTTP four twenty-nine', desc: 'Conversational number grouping' },
+    { text: 'HTTP 429', desc: 'Original written baseline' },
   ];
 
   const togglePlay = (track: 'raw' | 'controlled') => {
-    const src = track === 'raw' ? '/audio/1_postgresql_raw.mp3' : '/audio/2_postgres_cue_ell.mp3';
+    const src = track === 'raw' ? '/audio/6_full_sentence_raw.mp3' : '/audio/7_full_sentence_controlled.mp3';
     const audio = new Audio(src);
     setPlayingTrack(track);
     audio.play().catch(() => setPlayingTrack(null));
@@ -38,7 +35,7 @@ export function ScenesStory() {
             risk.
           </h2>
           <p className="mt-8 sm:mt-12 text-lg sm:text-2xl text-neutral-600 font-sans max-w-2xl leading-relaxed font-normal">
-            To an LLM or database, text is identical whether read with the eye or spoken aloud. But human speech demands cadence, syllable boundaries, and unwritten domain conventions.
+            To an LLM or database, text is identical whether read with the eye or spoken aloud. But human speech demands cadence, syllable boundaries, and unwritten domain conventions across technical terms, identifiers, currencies, and dates.
           </p>
         </div>
       </section>
@@ -55,34 +52,42 @@ export function ScenesStory() {
             Notice what happens inside an ordinary production sentence:
           </p>
 
-          <div className="text-3xl sm:text-5xl md:text-6xl font-sans font-bold text-neutral-950 leading-tight">
-            The service failed connecting to{' '}
+          <div className="text-2xl sm:text-4xl md:text-5xl font-sans font-bold text-neutral-950 leading-tight">
+            Order{' '}
             <span className="text-amber-600 underline decoration-amber-400 decoration-wavy underline-offset-8">
-              PostgreSQL
+              INV-2048-X
             </span>{' '}
-            over{' '}
+            failed on{' '}
             <span className="text-amber-600 underline decoration-amber-400 decoration-wavy underline-offset-8">
-              HTTP/2
+              17/09/2026
+            </span>{' '}
+            returning{' '}
+            <span className="text-amber-600 underline decoration-amber-400 decoration-wavy underline-offset-8">
+              HTTP 429
             </span>{' '}
             after transferring{' '}
             <span className="text-amber-600 underline decoration-amber-400 decoration-wavy underline-offset-8">
-              ₹1,25,000
+              ₹2,75,500
             </span>
             .
           </div>
 
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8 border-t border-neutral-200 font-mono text-xs">
-            <div>
-              <span className="text-amber-600 font-bold block mb-1">PostgreSQL</span>
-              <span className="text-neutral-500">Naive TTS: "post-gree-ess-cue-ell"</span>
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-neutral-200 font-mono text-xs">
+            <div className="border border-neutral-200 bg-white p-4">
+              <span className="text-amber-600 font-bold block mb-1">INV-2048-X [Identifier]</span>
+              <span className="text-neutral-500">Naive TTS: "inv minus twenty forty-eight x" instead of spelling each token</span>
             </div>
-            <div>
-              <span className="text-amber-600 font-bold block mb-1">HTTP/2</span>
-              <span className="text-neutral-500">Naive TTS: "H-T-T-P slash two"</span>
+            <div className="border border-neutral-200 bg-white p-4">
+              <span className="text-amber-600 font-bold block mb-1">17/09/2026 [Date]</span>
+              <span className="text-neutral-500">Naive TTS: "seventeen slash zero nine slash..." without calendar cadence</span>
             </div>
-            <div>
-              <span className="text-amber-600 font-bold block mb-1">₹1,25,000</span>
-              <span className="text-neutral-500">Naive TTS: "currency one twenty five thousand"</span>
+            <div className="border border-neutral-200 bg-white p-4">
+              <span className="text-amber-600 font-bold block mb-1">HTTP 429 [Status Code]</span>
+              <span className="text-neutral-500">Naive TTS: "H-T-T-P four hundred twenty-nine" instead of standard digits</span>
+            </div>
+            <div className="border border-neutral-200 bg-white p-4">
+              <span className="text-amber-600 font-bold block mb-1">₹2,75,500 [Currency]</span>
+              <span className="text-neutral-500">Western TTS: mangles Indian lakhs grouping or omits currency denomination</span>
             </div>
           </div>
         </div>
@@ -102,7 +107,7 @@ export function ScenesStory() {
               TARGET TERM EXPANSION
             </span>
             <div className="text-4xl sm:text-6xl font-mono font-black text-neutral-950">
-              PostgreSQL
+              HTTP 429
             </div>
           </div>
 
@@ -228,7 +233,7 @@ export function ScenesStory() {
               <span className="text-emerald-600">PREFERRED.</span>
             </h3>
             <p className="mt-8 font-sans text-xl text-neutral-600 leading-relaxed max-w-2xl">
-              "Postgres cue ell" demonstrably reduced acoustic ambiguity in the configured voice. The provenance record is saved to evidence memory.
+              "HTTP four two nine" demonstrably reduced numeric ambiguity in the configured voice. The provenance record is saved to evidence memory.
             </p>
           </div>
         </div>

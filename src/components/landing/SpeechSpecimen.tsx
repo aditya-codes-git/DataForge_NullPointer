@@ -1,8 +1,5 @@
-'use client';
-
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Play, Pause, Download, Volume2, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Play, Pause, Download } from 'lucide-react';
 
 export function SpeechSpecimen() {
   const [playingTrack, setPlayingTrack] = useState<'raw' | 'controlled' | null>(null);
@@ -42,7 +39,7 @@ export function SpeechSpecimen() {
             [SPECIMEN NO. 042]
           </span>
           <span className="font-mono text-xs text-neutral-500">
-            Acoustic Measurement — PostgreSQL v16 Entity Integrity
+            Acoustic Measurement — Multi-Entity Currency &amp; Technical Error Delivery
           </span>
         </div>
 
@@ -54,17 +51,21 @@ export function SpeechSpecimen() {
             <span>VOICE: ASTRA // MODEL: MISTV3</span>
           </div>
 
-          {/* Level 1: The Input Sentence with highlighted token */}
+          {/* Level 1: The Input Sentence with highlighted tokens */}
           <div className="mb-12">
             <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 block mb-2">
               WRITTEN PHRASE
             </span>
             <div className="text-2xl sm:text-4xl md:text-5xl font-sans font-bold text-neutral-950 leading-tight">
-              The deployment is running on{' '}
+              The invoice total is{' '}
               <span className="relative inline-block text-indigo-600 underline decoration-indigo-300 underline-offset-8">
-                PostgreSQL v16
+                ₹2,75,500
               </span>{' '}
-              with gRPC.
+              and the payment returned{' '}
+              <span className="relative inline-block text-indigo-600 underline decoration-indigo-300 underline-offset-8">
+                HTTP 429
+              </span>
+              .
             </div>
           </div>
 
@@ -83,7 +84,7 @@ export function SpeechSpecimen() {
               SPOKEN REPRESENTATION TESTED
             </span>
             <div className="font-mono text-xl sm:text-3xl font-bold text-indigo-950 tracking-tight">
-              "The deployment is running on Postgres cue ell version sixteen with gee are pee see."
+              "The invoice total is two lakh seventy-five thousand five hundred rupees and the payment returned HTTP four two nine."
             </div>
           </div>
 
@@ -191,7 +192,7 @@ export function SpeechSpecimen() {
                 CONTROLLED PREFERRED
               </div>
               <p className="font-sans text-xs text-neutral-600 mt-1 max-w-xl">
-                Acoustic verification demonstrated that "Postgres cue ell version sixteen" delivered clean syllable cadence without character-by-character letter artifacts.
+                Acoustic verification demonstrated that Indian numbering (lakhs) and HTTP status decomposition prevent numeric truncation and mechanical punctuation reading.
               </p>
             </div>
             <div className="text-right">
